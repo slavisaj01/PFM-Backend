@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PFM.Application.Commands;
+namespace PFM.Application.UseCases.Transactions.Commands;
 
 public class ImportTransactionsCommand : IRequest
 {

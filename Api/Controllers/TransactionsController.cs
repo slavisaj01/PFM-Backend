@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PFM.Application.Commands;
+using PFM.Application.UseCases.Transactions.Commands;
 
 namespace PFM.Api.Controllers;
 

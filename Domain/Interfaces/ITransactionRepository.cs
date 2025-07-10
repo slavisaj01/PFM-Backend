@@ -11,6 +11,5 @@ public interface ITransactionRepository
 {
     Task AddAsync(Transaction transaction);
     Task AddRangeAsync(IEnumerable<Transaction> transactions);
-    Task SaveChangesAsync();
 }
 

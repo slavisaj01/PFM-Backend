@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using LoanManagement.Domain.Interfaces;
 using MediatR;
 using PFM.Application.DTOs;
 using PFM.Application.Exceptions;
@@ -6,22 +7,20 @@ using PFM.Application.Validators;
 using PFM.Domain.Entities;
 using PFM.Domain.Enums;
 using PFM.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PFM.Application.Commands;
+
+namespace PFM.Application.UseCases.Transactions.Commands;
 
 public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactionsCommand>
 {
     private readonly ITransactionRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public ImportTransactionsCommandHandler(ITransactionRepository repository)
+    public ImportTransactionsCommandHandler(ITransactionRepository repository, IUnitOfWork unitOfWork)
     {
         _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task Handle(ImportTransactionsCommand request,
@@ -76,7 +75,7 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
 
         // Dodaj sve odjednom
         await _repository.AddRangeAsync(transactions);
-        await _repository.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync();
     }
 
 

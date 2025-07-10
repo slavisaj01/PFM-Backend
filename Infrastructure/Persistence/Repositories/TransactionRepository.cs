@@ -1,35 +1,32 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PFM.Domain.Entities;
 using PFM.Domain.Interfaces;
+using PFM.Infrastructure.Persistence.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PFM.Infrastructure.Repositories;
+namespace PFM.Infrastructure.Persistence.Repositories;
 
 public class TransactionRepository : ITransactionRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ApplicationDbContext _dbContext;
 
-    public TransactionRepository(ApplicationDbContext context)
+    public TransactionRepository(ApplicationDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     public async Task AddAsync(Transaction transaction)
     {
-        _context.Transactions.Add(transaction);
+        _dbContext.Transactions.Add(transaction);
     }
     public async Task AddRangeAsync(IEnumerable<Transaction> transactions)
     {
-        await _context.Transactions.AddRangeAsync(transactions); 
+        await _dbContext.Transactions.AddRangeAsync(transactions); 
     }
 
-    public async Task SaveChangesAsync()
-    {
-        await _context.SaveChangesAsync();
-    }
 }
 
