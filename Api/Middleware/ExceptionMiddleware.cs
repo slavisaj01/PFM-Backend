@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PFM.Application.DTOs;
+using PFM.Application.Exceptions;
 using System.Net;
 using System.Text.Json;
 
@@ -39,6 +41,22 @@ public class ExceptionMiddleware
             var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
             var json = JsonSerializer.Serialize(problemDetails, options);
             await context.Response.WriteAsync(json);
+        }
+        catch (BusinessException ex)
+        {
+            _logger.LogWarning(ex, "Business exception occurred");
+
+            context.Response.StatusCode = 440;
+            context.Response.ContentType = "application/json";
+
+            var dto = new BusinessProblemDto
+            {
+                Problem = ex.Problem,
+                Message = ex.Message,
+                Details = ex.Details
+            };
+
+            await context.Response.WriteAsJsonAsync(dto);
         }
         catch (Exception exception)
         {

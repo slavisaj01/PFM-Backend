@@ -1,6 +1,8 @@
 ﻿using CsvHelper;
 using MediatR;
 using PFM.Application.DTOs;
+using PFM.Application.Exceptions;
+using PFM.Application.Validators;
 using PFM.Domain.Entities;
 using PFM.Domain.Enums;
 using PFM.Domain.Interfaces;
@@ -33,8 +35,31 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
         // Sada čitaj iz memorije
         using var reader = new StreamReader(memoryStream);
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-
         var records = csv.GetRecords<TransactionCsvDto>();
+
+        // 3. VALIDACIJA
+        var validator = new TransactionCsvDtoValidator();
+        var invalidRecords = new List<string>();
+
+        foreach (var record in records)
+        {
+            var result = validator.Validate(record);
+            if (!result.IsValid)
+            {
+                var message = $"Invalid record ID {record.Id}: " +
+                              string.Join(" | ", result.Errors.Select(e => e.ErrorMessage));
+                invalidRecords.Add(message);
+            }
+        }
+
+        if (invalidRecords.Any())
+        {
+            throw new BusinessException(
+            problem: "validation-error",
+            message: "CSV contains invalid rows",
+            details: string.Join("; ", invalidRecords)
+            );
+        }
 
         var transactions = records.Select(csvRecord => new Transaction
         {
@@ -54,6 +79,6 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
         await _repository.SaveChangesAsync();
     }
 
-    
+
 }
 
