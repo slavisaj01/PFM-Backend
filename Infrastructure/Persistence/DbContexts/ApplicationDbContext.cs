@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PFM.Domain.Entities;
 using PFM.Infrastructure.Persistence.Configurations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PFM.Infrastructure.Persistence.Data;
 

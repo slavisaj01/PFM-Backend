@@ -26,17 +26,14 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
     public async Task Handle(ImportTransactionsCommand request,
         CancellationToken cancellationToken)
     {
-        // Kopiraj stream u memoriju ASYNC
         using var memoryStream = new MemoryStream();
         await request.CsvStream.CopyToAsync(memoryStream, cancellationToken);
         memoryStream.Position = 0;
 
-        // Sada čitaj iz memorije
         using var reader = new StreamReader(memoryStream);
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
         var records = csv.GetRecords<TransactionCsvDto>();
 
-        // 3. VALIDACIJA
         var validator = new TransactionCsvDtoValidator();
         var invalidRecords = new List<string>();
 
@@ -51,7 +48,7 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
             }
         }
 
-        if (invalidRecords.Any())
+        if (invalidRecords.Count != 0)
         {
             throw new BusinessException(
             problem: "validation-error",
@@ -73,7 +70,6 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
             Kind = Enum.Parse<TransactionKind>(csvRecord.Kind, ignoreCase: true)
         }).ToList();
 
-        // Dodaj sve odjednom
         await _repository.AddRangeAsync(transactions);
         await _unitOfWork.SaveChangesAsync();
     }

@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace PFM.Application.DTOs;
 
 public class BusinessProblemDto
 {
-    [Required]
-    public string Problem { get; set; } 
+    public required string Problem { get; set; }
 
-    [Required]
-    public string Message { get; set; } 
+    public required string Message { get; set; }
 
     public string? Details { get; set; }
 }

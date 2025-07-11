@@ -1,5 +1,4 @@
 ﻿using LoanManagement.Domain.Interfaces;
-using PFM.Domain.Interfaces;
 using PFM.Infrastructure.Persistence.Data;
 
 namespace LoanManagement.Infrastructure.Persistence;

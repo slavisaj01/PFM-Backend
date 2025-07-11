@@ -1,4 +1,4 @@
-﻿namespace PFM.Domain
-{
-    public class AssemblyMarker { }
-}
+﻿namespace PFM.Domain;
+
+public class AssemblyMarker { }
+
