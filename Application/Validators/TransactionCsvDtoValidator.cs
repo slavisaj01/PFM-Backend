@@ -15,7 +15,7 @@ namespace PFM.Application.Validators;
             .Must(val => Enum.TryParse<Direction>(val, true, out _))
             .WithMessage("Direction must be 'd' or 'c'");
         RuleFor(x => x.Amount).NotEmpty().GreaterThan(0);
-        RuleFor(x => x.Currency).NotEmpty();
+        RuleFor(x => x.Currency).NotEmpty().MinimumLength(3).MaximumLength(3);
         RuleFor(x => x.Kind)
             .Must(val => Enum.TryParse<TransactionKind>(val, true, out _))
             .WithMessage("Invalid Kind value");

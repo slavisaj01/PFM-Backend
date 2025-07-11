@@ -3,6 +3,7 @@ using LoanManagement.Domain.Interfaces;
 using MediatR;
 using PFM.Application.DTOs;
 using PFM.Application.Exceptions;
+using PFM.Application.Helpers;
 using PFM.Application.Validators;
 using PFM.Domain.Entities;
 using PFM.Domain.Enums;
@@ -32,29 +33,34 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
 
         using var reader = new StreamReader(memoryStream);
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-        var records = csv.GetRecords<TransactionCsvDto>();
+        var records = csv.GetRecords<TransactionCsvDto>().ToList();
 
         var validator = new TransactionCsvDtoValidator();
-        var invalidRecords = new List<string>();
+        var validationErrors = new List<ValidationErrorDto>();
 
         foreach (var record in records)
         {
             var result = validator.Validate(record);
             if (!result.IsValid)
             {
-                var message = $"Invalid record ID {record.Id}: " +
-                              string.Join(" | ", result.Errors.Select(e => e.ErrorMessage));
-                invalidRecords.Add(message);
+                foreach (var error in result.Errors)
+                {
+                    validationErrors.Add(new ValidationErrorDto
+                    {
+                        Tag = error.PropertyName,
+                        Error = ValidationErrorMapper.Map(error),
+                        Message = $"Invalid record ID {record.Id}: {error.ErrorMessage}"
+                    });
+                }
             }
         }
 
-        if (invalidRecords.Count != 0)
+        if (validationErrors.Count != 0)
         {
-            throw new BusinessException(
-            problem: "validation-error",
-            message: "CSV contains invalid rows",
-            details: string.Join("; ", invalidRecords)
-            );
+            throw new ValidationProblemException(new ValidationProblemDto
+            {
+                Errors = validationErrors
+            });
         }
 
         var transactions = records.Select(csvRecord => new Transaction
@@ -71,6 +77,7 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
         }).ToList();
 
         await _repository.AddRangeAsync(transactions);
+
         await _unitOfWork.SaveChangesAsync();
     }
 

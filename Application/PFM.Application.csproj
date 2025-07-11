@@ -8,10 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="Common\**" />
+    <Compile Remove="Interfaces\**" />
     <Compile Remove="Queries\**" />
     <EmbeddedResource Remove="Common\**" />
+    <EmbeddedResource Remove="Interfaces\**" />
     <EmbeddedResource Remove="Queries\**" />
     <None Remove="Common\**" />
+    <None Remove="Interfaces\**" />
     <None Remove="Queries\**" />
   </ItemGroup>
 
@@ -27,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
     <Folder Include="UseCases\Transactions\Queries\" />
   </ItemGroup>
 

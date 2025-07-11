@@ -58,6 +58,15 @@ public class ExceptionMiddleware
 
             await context.Response.WriteAsJsonAsync(dto);
         }
+        catch (ValidationProblemException ex)
+        {
+            _logger.LogWarning(ex, "Custom validation problem occurred");
+
+            context.Response.StatusCode = 400;
+            context.Response.ContentType = "application/json";
+
+            await context.Response.WriteAsJsonAsync(ex.Validation);
+        }
         catch (Exception exception)
         {
             _logger.LogError(exception, "Unhandled exception occurred: {Message}", exception.Message);
