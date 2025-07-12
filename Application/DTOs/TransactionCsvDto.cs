@@ -8,16 +8,16 @@ public class TransactionCsvDto
     public string Id { get; set; }
 
     [Name("beneficiary-name")]
-    public string? BeneficiaryName { get; set; }
+    public string BeneficiaryName { get; set; }
 
     [Name("date")]
-    public DateTime Date { get; set; }
+    public string? Date { get; set; }
 
     [Name("direction")]
     public string Direction { get; set; }
 
     [Name("amount")]
-    public double Amount { get; set; }
+    public double? Amount { get; set; }
 
     [Name("description")]
     public string? Description { get; set; }

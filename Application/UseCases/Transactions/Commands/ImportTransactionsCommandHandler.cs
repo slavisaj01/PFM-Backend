@@ -67,9 +67,9 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
         {
             Id = csvRecord.Id,
             BeneficiaryName = csvRecord.BeneficiaryName,
-            Date = csvRecord.Date,
+            Date = DateTime.Parse(csvRecord.Date),
             Direction = Enum.Parse<Direction>(csvRecord.Direction, ignoreCase: true),
-            Amount = (decimal)csvRecord.Amount,
+            Amount = (decimal)csvRecord.Amount.Value,
             Description = csvRecord.Description,
             Currency = csvRecord.Currency,
             Mcc = csvRecord.Mcc,

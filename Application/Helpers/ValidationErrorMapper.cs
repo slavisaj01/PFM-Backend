@@ -7,26 +7,27 @@ public class ValidationErrorMapper
 {
     public static string Map(ValidationFailure failure)
     {
-        if (failure.ErrorMessage.Contains("Direction must be 'd' or 'c'", StringComparison.OrdinalIgnoreCase))
+        var message = failure.ErrorMessage.ToLowerInvariant();
+
+        if (message.Contains("direction must be 'd' or 'c'"))
             return "unknown-enum";
 
-        if (failure.ErrorMessage.Contains("Invalid Kind value", StringComparison.OrdinalIgnoreCase))
+        if (message.Contains("invalid kind value"))
             return "unknown-enum";
 
-        if (failure.ErrorMessage.Contains("Provided MCC is not valid", StringComparison.OrdinalIgnoreCase))
+        if (message.Contains("provided mcc is not valid"))
             return "not-on-list";
 
-        if (failure.ErrorCode == "LengthValidator" &&
-                failure.FormattedMessagePlaceholderValues != null)
-        {
-            if (failure.FormattedMessagePlaceholderValues.ContainsKey("MinLength"))
-                return "min-length";
+        if (failure.ErrorMessage.Contains("Invalid date format", StringComparison.OrdinalIgnoreCase))
+            return "invalid-format";
 
-            if (failure.FormattedMessagePlaceholderValues.ContainsKey("MaxLength"))
-                return "max-length";
+        if (message.Contains("must be 3 characters or fewer") || 
+                message.Contains("must be 3 characters or less"))
+            return "max-length";
 
-            return "length"; 
-        }
+        if (message.Contains("must be at least 3 characters") || 
+                message.Contains("must be 3 characters or more"))
+            return "min-length";
 
         return failure.ErrorCode switch
         {

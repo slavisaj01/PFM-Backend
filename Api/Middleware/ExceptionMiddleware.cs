@@ -28,19 +28,23 @@ public class ExceptionMiddleware
         {
             _logger.LogError(dbEx, "Database update failed");
 
-            context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.ContentType = "application/json";
 
-            var problemDetails = new ProblemDetails
+            var error = new ValidationProblemDto
             {
-                Status = context.Response.StatusCode,
-                Title = "Database Error",
-                Detail = "A database error occurred while processing your request. Please contact support.",
+                Errors = new List<ValidationErrorDto>
+                {
+                    new ValidationErrorDto
+                    {
+                        Tag = null,
+                        Error = "invalid-format",
+                        Message = "A database error occurred while processing your request. Please contact support."
+                    }
+                }
             };
 
-            var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-            var json = JsonSerializer.Serialize(problemDetails, options);
-            await context.Response.WriteAsync(json);
+            await context.Response.WriteAsJsonAsync(error);
         }
         catch (BusinessException ex)
         {
@@ -67,27 +71,27 @@ public class ExceptionMiddleware
 
             await context.Response.WriteAsJsonAsync(ex.Validation);
         }
-        catch (Exception exception)
+        catch (Exception ex)
         {
-            _logger.LogError(exception, "Unhandled exception occurred: {Message}", exception.Message);
+            _logger.LogError(ex, "Unhandled exception occurred: {Message}", ex.Message);
 
-            context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.ContentType = "application/json";
 
-            var problemDetails = new ProblemDetails
+            var error = new ValidationProblemDto
             {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Internal Server Error",
-                Detail = "An unexpected error occurred. Please try again later.",
+                Errors = new List<ValidationErrorDto>
+                {
+                    new ValidationErrorDto
+                    {
+                        Tag = null,
+                        Error = "invalid-format",
+                        Message = "An unexpected error occurred. Please try again later."
+                    }
+                }
             };
 
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-
-            var json = JsonSerializer.Serialize(problemDetails, options);
-            await context.Response.WriteAsync(json);
+            await context.Response.WriteAsJsonAsync(error);
         }
     }
 }
