@@ -18,7 +18,7 @@ public class Program
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         builder.Services.AddMediatR(cfg =>
-            cfg.RegisterServicesFromAssembly(typeof(PFM.Domain.AssemblyMarker).Assembly));
+            cfg.RegisterServicesFromAssembly(typeof(PFM.Application.AssemblyMarker).Assembly));
 
         builder.Services.AddInfrastructureServices();
         builder.Services.AddApplicationServices();

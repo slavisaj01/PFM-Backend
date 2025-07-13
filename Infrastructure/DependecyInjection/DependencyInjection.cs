@@ -1,6 +1,10 @@
-﻿using LoanManagement.Domain.Interfaces;
+﻿using FluentValidation;
+using LoanManagement.Domain.Interfaces;
 using LoanManagement.Infrastructure.Persistence;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using PFM.Application.Common.Behaviors;
+using PFM.Application.Validators;
 using PFM.Domain.Interfaces;
 using PFM.Infrastructure.Persistence.Repositories;
 
@@ -18,7 +22,8 @@ public static class DependencyInjection
 
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-
+        services.AddValidatorsFromAssemblyContaining<GetTransactionsQueryValidator>();
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         return services;
     }
 }

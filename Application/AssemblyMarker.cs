@@ -1,4 +1,4 @@
-﻿namespace PFM.Domain;
+﻿namespace PFM.Application;
 
 public class AssemblyMarker { }
 
