@@ -12,8 +12,8 @@ using PFM.Infrastructure.Persistence.Data;
 namespace PFM.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250710142441_CreateTransactionTable")]
-    partial class CreateTransactionTable
+    [Migration("20250713153528_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,28 @@ namespace PFM.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("PFM.Domain.Entities.Category", b =>
+                {
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ParentCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Code");
+
+                    b.HasIndex("ParentCode");
+
+                    b.ToTable("Categories", (string)null);
+                });
 
             modelBuilder.Entity("PFM.Domain.Entities.Transaction", b =>
                 {
@@ -37,6 +59,11 @@ namespace PFM.Infrastructure.Migrations
                     b.Property<string>("BeneficiaryName")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("CatCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("catcode");
 
                     b.Property<string>("Currency")
                         .IsRequired()
@@ -63,7 +90,36 @@ namespace PFM.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Transactions");
+                    b.HasIndex("CatCode");
+
+                    b.ToTable("Transactions", (string)null);
+                });
+
+            modelBuilder.Entity("PFM.Domain.Entities.Category", b =>
+                {
+                    b.HasOne("PFM.Domain.Entities.Category", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentCode")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("PFM.Domain.Entities.Transaction", b =>
+                {
+                    b.HasOne("PFM.Domain.Entities.Category", "Category")
+                        .WithMany("Transactions")
+                        .HasForeignKey("CatCode")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("PFM.Domain.Entities.Category", b =>
+                {
+                    b.Navigation("Children");
+
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

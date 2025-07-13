@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PFM.Domain.Entities;
 using PFM.Infrastructure.Persistence.Configurations;
+using PFM.Infrastructure.Persistence.EntityTypeConfigurations;
 
 namespace PFM.Infrastructure.Persistence.Data;
 
@@ -10,8 +11,11 @@ public class ApplicationDbContext : DbContext
         
     public DbSet<Transaction> Transactions { get; set; }
 
+    public DbSet<Category> Categories { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfiguration(new CategoryEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new TransactionEntityTypeConfiguration());
         base.OnModelCreating(modelBuilder);
     }

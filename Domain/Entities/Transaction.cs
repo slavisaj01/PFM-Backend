@@ -21,5 +21,8 @@ public class Transaction
     public int? Mcc { get; set; }
 
     public TransactionKind Kind { get; set; }
+
+    public string? CatCode { get; set; }  
+    public Category? Category { get; set; }
 }
 
