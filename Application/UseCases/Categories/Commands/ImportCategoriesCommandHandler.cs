@@ -5,6 +5,7 @@ using MediatR;
 using PFM.Application.DTOs;
 using PFM.Application.Exceptions;
 using PFM.Application.Helpers;
+using PFM.Application.Interfaces;
 using PFM.Application.Validators;
 using PFM.Domain.Entities;
 using PFM.Domain.Interfaces;
@@ -16,35 +17,23 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
 {
     private readonly ICategoryRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICsvParser _csvParser;
 
-    public ImportCategoriesCommandHandler(ICategoryRepository repository, IUnitOfWork unitOfWork)
+    public ImportCategoriesCommandHandler(ICategoryRepository repository,
+        IUnitOfWork unitOfWork, ICsvParser csvParser)
     {
         _unitOfWork = unitOfWork;
         _repository = repository;
+        _csvParser = csvParser;
     }
 
     public async Task Handle(ImportCategoriesCommand request, CancellationToken cancellationToken)
     {
-        // TODO: PROBLEM SA FOREIGN KEY CONSTRAINT - HIJERARHIJA KATEGORIJA
-        // 
-        // ŠEMA PROBLEMA:
-        // - Categories tabela ima self-reference: ParentCode -> Code
-        // - EF AddRangeAsync() radi batch insert koji ignoriše redosled
-        // - Pokušava da ubaci child kategorije PRE njihovih parent-a
-        // - Rezultat: FK constraint error "FK_Categories_Categories_ParentCode"
 
-        using var reader = new StreamReader(request.CsvStream, leaveOpen: true);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        var csvRecords = await _csvParser.ParseAsync<CategoryCsvDto>(request.CsvStream, cancellationToken);
 
         var validator = new CategoryCsvDtoValidator();
         var validationErrors = new List<ValidationErrorDto>();
-
-        var csvRecords = new List<CategoryCsvDto>();
-
-        await foreach (var record in csv.GetRecordsAsync<CategoryCsvDto>(cancellationToken))
-        {
-            csvRecords.Add(record);
-        }
 
         foreach (var record in csvRecords)
         {
@@ -93,7 +82,8 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
                 {
                     Code = record.Code,
                     Name = record.Name,
-                    ParentCode = record.ParentCode
+                    ParentCode = string.IsNullOrWhiteSpace(record.ParentCode)
+                        ? null : record.ParentCode
                 });
             }
         }
@@ -103,6 +93,11 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
 
         if (toUpdate.Any())
             await _repository.UpdateRangeAsync(toUpdate);
+
+        foreach (var category in toInsert)
+        {
+            Console.WriteLine($"Code: {category.Code}, ParentCode: '{category.ParentCode}'");
+        }
 
         await _unitOfWork.SaveChangesAsync();
     }

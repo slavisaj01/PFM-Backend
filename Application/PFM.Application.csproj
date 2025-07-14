@@ -8,17 +8,15 @@
 
   <ItemGroup>
     <Compile Remove="Common\**" />
-    <Compile Remove="Interfaces\**" />
     <Compile Remove="Queries\**" />
     <EmbeddedResource Remove="Common\**" />
-    <EmbeddedResource Remove="Interfaces\**" />
     <EmbeddedResource Remove="Queries\**" />
     <None Remove="Common\**" />
-    <None Remove="Interfaces\**" />
     <None Remove="Queries\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.0.1" />
     <PackageReference Include="CsvHelper" Version="33.1.0" />
     <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />

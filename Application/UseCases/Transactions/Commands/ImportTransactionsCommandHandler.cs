@@ -4,6 +4,7 @@ using MediatR;
 using PFM.Application.DTOs;
 using PFM.Application.Exceptions;
 using PFM.Application.Helpers;
+using PFM.Application.Interfaces;
 using PFM.Application.Validators;
 using PFM.Domain.Entities;
 using PFM.Domain.Enums;
@@ -17,23 +18,25 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
 {
     private readonly ITransactionRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICsvParser _csvParser;
 
-    public ImportTransactionsCommandHandler(ITransactionRepository repository, IUnitOfWork unitOfWork)
+    public ImportTransactionsCommandHandler(ITransactionRepository repository,
+        IUnitOfWork unitOfWork, ICsvParser csvParser)
     {
         _repository = repository;
         _unitOfWork = unitOfWork;
+        _csvParser = csvParser;
     }
 
     public async Task Handle(ImportTransactionsCommand request, CancellationToken cancellationToken)
     {
-        using var reader = new StreamReader(request.CsvStream, leaveOpen: true);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        var csvRecords = await _csvParser.ParseAsync<TransactionCsvDto>(request.CsvStream, cancellationToken);
 
         var validator = new TransactionCsvDtoValidator();
         var validationErrors = new List<ValidationErrorDto>();
         var transactions = new List<Transaction>();
 
-        await foreach (var record in csv.GetRecordsAsync<TransactionCsvDto>(cancellationToken))
+        foreach (var record in csvRecords)
         {
             var result = validator.Validate(record);
             if (!result.IsValid)

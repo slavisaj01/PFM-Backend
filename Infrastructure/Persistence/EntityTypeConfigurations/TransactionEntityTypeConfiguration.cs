@@ -47,11 +47,6 @@ public class TransactionEntityTypeConfiguration : IEntityTypeConfiguration<Trans
             .HasColumnName("catcode")
             .HasMaxLength(50);
 
-        builder.HasOne(t => t.Category)
-            .WithMany(c => c.Transactions)
-            .HasForeignKey(t => t.CatCode)
-            .HasPrincipalKey(c => c.Code)
-            .OnDelete(DeleteBehavior.SetNull);
         
     }
 
