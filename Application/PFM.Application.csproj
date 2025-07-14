@@ -29,4 +29,8 @@
     <ProjectReference Include="..\Domain\PFM.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\Categories\Queries\" />
+  </ItemGroup>
+
 </Project>

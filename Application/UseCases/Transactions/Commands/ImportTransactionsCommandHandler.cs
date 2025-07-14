@@ -24,21 +24,16 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
         _unitOfWork = unitOfWork;
     }
 
-    public async Task Handle(ImportTransactionsCommand request,
-        CancellationToken cancellationToken)
+    public async Task Handle(ImportTransactionsCommand request, CancellationToken cancellationToken)
     {
-        using var memoryStream = new MemoryStream();
-        await request.CsvStream.CopyToAsync(memoryStream, cancellationToken);
-        memoryStream.Position = 0;
-
-        using var reader = new StreamReader(memoryStream);
+        using var reader = new StreamReader(request.CsvStream, leaveOpen: true);
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-        var records = csv.GetRecords<TransactionCsvDto>().ToList();
 
         var validator = new TransactionCsvDtoValidator();
         var validationErrors = new List<ValidationErrorDto>();
+        var transactions = new List<Transaction>();
 
-        foreach (var record in records)
+        await foreach (var record in csv.GetRecordsAsync<TransactionCsvDto>(cancellationToken))
         {
             var result = validator.Validate(record);
             if (!result.IsValid)
@@ -53,6 +48,21 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
                     });
                 }
             }
+            else
+            {
+                transactions.Add(new Transaction
+                {
+                    Id = record.Id,
+                    BeneficiaryName = record.BeneficiaryName,
+                    Date = DateTime.Parse(record.Date),
+                    Direction = Enum.Parse<Direction>(record.Direction, ignoreCase: true),
+                    Amount = (decimal)record.Amount.Value,
+                    Description = record.Description,
+                    Currency = record.Currency,
+                    Mcc = record.Mcc,
+                    Kind = Enum.Parse<TransactionKind>(record.Kind, ignoreCase: true)
+                });
+            }
         }
 
         if (validationErrors.Count != 0)
@@ -63,21 +73,7 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
             });
         }
 
-        var transactions = records.Select(csvRecord => new Transaction
-        {
-            Id = csvRecord.Id,
-            BeneficiaryName = csvRecord.BeneficiaryName,
-            Date = DateTime.Parse(csvRecord.Date),
-            Direction = Enum.Parse<Direction>(csvRecord.Direction, ignoreCase: true),
-            Amount = (decimal)csvRecord.Amount.Value,
-            Description = csvRecord.Description,
-            Currency = csvRecord.Currency,
-            Mcc = csvRecord.Mcc,
-            Kind = Enum.Parse<TransactionKind>(csvRecord.Kind, ignoreCase: true)
-        }).ToList();
-
         await _repository.AddRangeAsync(transactions);
-
         await _unitOfWork.SaveChangesAsync();
     }
 

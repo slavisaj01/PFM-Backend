@@ -18,7 +18,7 @@ public class TransactionRepository : ITransactionRepository
 
     public async Task AddAsync(Transaction transaction)
     {
-        _dbContext.Transactions.Add(transaction);
+         _dbContext.Transactions.Add(transaction);
     }
     public async Task AddRangeAsync(IEnumerable<Transaction> transactions)
     {
