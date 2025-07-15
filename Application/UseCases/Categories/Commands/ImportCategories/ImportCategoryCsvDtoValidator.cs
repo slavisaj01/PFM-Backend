@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using PFM.Application.DTOs;
 
-namespace PFM.Application.Validators;
+namespace PFM.Application.UseCases.Categories.Commands.ImportCategories;
 
-public class CategoryCsvDtoValidator : AbstractValidator<CategoryCsvDto>
+public class ImportCategoryCsvDtoValidator : AbstractValidator<CategoryCsvDto>
 {
-    public CategoryCsvDtoValidator()
+    public ImportCategoryCsvDtoValidator()
     {
         RuleFor(c => c.Code)
             .NotEmpty().WithMessage("Code is required.")

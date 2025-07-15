@@ -3,11 +3,11 @@ using PFM.Application.DTOs;
 using PFM.Domain.Constants;
 using PFM.Domain.Enums;
 
-namespace PFM.Application.Validators;
+namespace PFM.Application.UseCases.Transactions.Commands.ImportTransactions;
 
-public class TransactionCsvDtoValidator : AbstractValidator<TransactionCsvDto>
+public class ImportTransactionCsvDtoValidator : AbstractValidator<TransactionCsvDto>
 {
-    public TransactionCsvDtoValidator()
+    public ImportTransactionCsvDtoValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
         RuleFor(x => x.Date)

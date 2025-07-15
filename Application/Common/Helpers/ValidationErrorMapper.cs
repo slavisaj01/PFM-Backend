@@ -1,6 +1,6 @@
 ﻿using FluentValidation.Results;
 
-namespace PFM.Application.Helpers;
+namespace PFM.Application.Common.Helpers;
 
 public class ValidationErrorMapper
 {

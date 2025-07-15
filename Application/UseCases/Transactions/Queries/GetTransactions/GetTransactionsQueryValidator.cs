@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
-using PFM.Application.UseCases.Transactions.Queries;
 
-namespace PFM.Application.Validators;
+namespace PFM.Application.UseCases.Transactions.Queries.GetTransactions;
 
 public class GetTransactionsQueryValidator : AbstractValidator<GetTransactionsQuery>
 {

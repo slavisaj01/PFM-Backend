@@ -2,29 +2,32 @@
 using CsvHelper;
 using LoanManagement.Domain.Interfaces;
 using MediatR;
+using PFM.Application.Common.Helpers;
+using PFM.Application.Common.Interfaces;
 using PFM.Application.DTOs;
-using PFM.Application.Exceptions;
-using PFM.Application.Helpers;
-using PFM.Application.Interfaces;
-using PFM.Application.Validators;
+using PFM.Application.Common.Exceptions;
 using PFM.Domain.Entities;
 using PFM.Domain.Interfaces;
-using System.Globalization;
+using AutoMapper;
 
-namespace PFM.Application.UseCases.Categories.Commands;
+namespace PFM.Application.UseCases.Categories.Commands.ImportCategories;
 
 public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCommand>
 {
     private readonly ICategoryRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICsvParser _csvParser;
+    private readonly IMapper _mapper;
+    private readonly ICsvValidationService _validationService;
 
-    public ImportCategoriesCommandHandler(ICategoryRepository repository,
-        IUnitOfWork unitOfWork, ICsvParser csvParser)
+    public ImportCategoriesCommandHandler(ICategoryRepository repository, IUnitOfWork unitOfWork, 
+        ICsvParser csvParser, IMapper mapper, ICsvValidationService csvValidation)
     {
         _unitOfWork = unitOfWork;
         _repository = repository;
         _csvParser = csvParser;
+        _mapper = mapper;
+        _validationService = csvValidation;
     }
 
     public async Task Handle(ImportCategoriesCommand request, CancellationToken cancellationToken)
@@ -32,25 +35,9 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
 
         var csvRecords = await _csvParser.ParseAsync<CategoryCsvDto>(request.CsvStream, cancellationToken);
 
-        var validator = new CategoryCsvDtoValidator();
-        var validationErrors = new List<ValidationErrorDto>();
-
-        foreach (var record in csvRecords)
-        {
-            var result = validator.Validate(record);
-            if (!result.IsValid)
-            {
-                foreach (var error in result.Errors)
-                {
-                    validationErrors.Add(new ValidationErrorDto
-                    {
-                        Tag = error.PropertyName,
-                        Error = ValidationErrorMapper.Map(error),
-                        Message = $"Invalid record CODE {record.Code}: {error.ErrorMessage}"
-                    });
-                }
-            }
-        }
+        var validator = new ImportCategoryCsvDtoValidator();
+        var validationErrors = _validationService.ValidateRecords(csvRecords, validator,
+            r => r.Code);
 
         if (validationErrors.Count != 0)
         {
@@ -78,13 +65,8 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
             }
             else
             {
-                toInsert.Add(new Category
-                {
-                    Code = record.Code,
-                    Name = record.Name,
-                    ParentCode = string.IsNullOrWhiteSpace(record.ParentCode)
-                        ? null : record.ParentCode
-                });
+                var category = _mapper.Map<Category>(record);
+                toInsert.Add(category);
             }
         }
 
@@ -93,11 +75,6 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
 
         if (toUpdate.Any())
             await _repository.UpdateRangeAsync(toUpdate);
-
-        foreach (var category in toInsert)
-        {
-            Console.WriteLine($"Code: {category.Code}, ParentCode: '{category.ParentCode}'");
-        }
 
         await _unitOfWork.SaveChangesAsync();
     }

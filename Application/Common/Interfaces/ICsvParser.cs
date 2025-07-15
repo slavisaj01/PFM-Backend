@@ -1,5 +1,4 @@
-﻿
-namespace PFM.Application.Interfaces;
+﻿namespace PFM.Application.Common.Interfaces;
 
 public interface ICsvParser
 {

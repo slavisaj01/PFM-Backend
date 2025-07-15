@@ -1,8 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using PFM.Api.Middleware;
 using PFM.Infrastructure.DependecyInjection;
-using PFM.Infrastructure.Persistence.Data;
 using Serilog;
+using Newtonsoft.Json.Converters;
 
 namespace Api;
 
@@ -12,7 +11,11 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers()
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.Converters.Add(new StringEnumConverter());
+            });
 
         builder.Services.AddInfrastructureServices(builder.Configuration);
         builder.Services.AddApplicationServices();

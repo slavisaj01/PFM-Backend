@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using PFM.Application.DTOs;
-using PFM.Application.Exceptions;
+using PFM.Application.Common.Exceptions;
 
 namespace PFM.Application.Common.Behaviors;
 

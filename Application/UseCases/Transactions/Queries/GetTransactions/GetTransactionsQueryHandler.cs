@@ -6,7 +6,7 @@ using PFM.Domain.Entities;
 using PFM.Domain.Enums;
 using PFM.Domain.Interfaces;
 
-namespace PFM.Application.UseCases.Transactions.Queries;
+namespace PFM.Application.UseCases.Transactions.Queries.GetTransactions;
 
 public class GetTransactionsQueryHandler : IRequestHandler<GetTransactionsQuery, GetTransactionsResponse>
 {

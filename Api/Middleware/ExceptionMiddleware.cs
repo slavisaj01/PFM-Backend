@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PFM.Application.Common.Exceptions;
 using PFM.Application.DTOs;
-using PFM.Application.Exceptions;
 using System.Net;
 using System.Text.Json;
 
@@ -38,7 +38,7 @@ public class ExceptionMiddleware
                     new ValidationErrorDto
                     {
                         Tag = null,
-                        Error = "invalid-format",
+                        Error = "database-error",
                         Message = "A database error occurred while processing your request. Please contact support."
                     }
                 }

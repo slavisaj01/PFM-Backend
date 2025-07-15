@@ -1,5 +1,5 @@
 ﻿using CsvHelper;
-using PFM.Application.Interfaces;
+using PFM.Application.Common.Interfaces;
 using System.Globalization;
 
 namespace PFM.Infrastructure.Parsers;

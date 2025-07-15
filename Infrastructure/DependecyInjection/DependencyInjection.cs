@@ -6,8 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PFM.Application.Common.Behaviors;
-using PFM.Application.Interfaces;
-using PFM.Application.Validators;
+using PFM.Application.Common.Interfaces;
+using PFM.Application.Common.Mappings;
+using PFM.Application.Common.Services;
+using PFM.Application.UseCases.Transactions.Queries.GetTransactions;
 using PFM.Domain.Interfaces;
 using PFM.Infrastructure.Parsers;
 using PFM.Infrastructure.Persistence.Data;
@@ -39,6 +41,9 @@ public static class DependencyInjection
         services.AddValidatorsFromAssemblyContaining<GetTransactionsQueryValidator>();
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
+        services.AddAutoMapper(cfg => { }, typeof(CategoryProfile).Assembly);
+
+        services.AddScoped<ICsvValidationService, CsvValidationService>();
 
         return services;
     }

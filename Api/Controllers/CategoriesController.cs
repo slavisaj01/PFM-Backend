@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using PFM.Application.UseCases.Categories.Commands;
+using PFM.Application.UseCases.Categories.Commands.ImportCategories;
 
 namespace PFM.Api.Controllers;
 

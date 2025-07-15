@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace PFM.Application.Utilities;
+namespace PFM.Application.Common.Utilities;
 
 public static class EnumExtensions
 {

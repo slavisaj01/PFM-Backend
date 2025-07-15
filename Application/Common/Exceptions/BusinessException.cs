@@ -1,5 +1,4 @@
-﻿
-namespace PFM.Application.Exceptions;
+﻿namespace PFM.Application.Common.Exceptions;
 
 public class BusinessException : Exception
 {

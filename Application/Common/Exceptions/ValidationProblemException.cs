@@ -1,7 +1,6 @@
-﻿
-using PFM.Application.DTOs;
+﻿using PFM.Application.DTOs;
 
-namespace PFM.Application.Exceptions;
+namespace PFM.Application.Common.Exceptions;
 
 public class ValidationProblemException : Exception
 {
