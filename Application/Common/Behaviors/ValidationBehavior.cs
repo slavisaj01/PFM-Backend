@@ -2,6 +2,7 @@
 using MediatR;
 using PFM.Application.DTOs;
 using PFM.Application.Common.Exceptions;
+using PFM.Application.Common.Helpers;
 
 namespace PFM.Application.Common.Behaviors;
 
@@ -39,7 +40,7 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
                     Errors = failures.Select(error => new ValidationErrorDto
                     {
                         Tag = error.PropertyName,
-                        Error = "invalid-format",
+                        Error = ValidationErrorMapper.Map(error),
                         Message = error.ErrorMessage
                     }).ToList()
                 };

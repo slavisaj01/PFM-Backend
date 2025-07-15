@@ -10,6 +10,7 @@ using PFM.Application.Common.Interfaces;
 using PFM.Application.Common.Mappings;
 using PFM.Application.Common.Services;
 using PFM.Application.UseCases.Transactions.Queries.GetTransactions;
+using PFM.Domain.Common.Services;
 using PFM.Domain.Interfaces;
 using PFM.Infrastructure.Parsers;
 using PFM.Infrastructure.Persistence.Data;
@@ -44,6 +45,8 @@ public static class DependencyInjection
         services.AddAutoMapper(cfg => { }, typeof(CategoryProfile).Assembly);
 
         services.AddScoped<ICsvValidationService, CsvValidationService>();
+
+        services.AddScoped<ICategoryDomainService, CategoryDomainService>();
 
         return services;
     }

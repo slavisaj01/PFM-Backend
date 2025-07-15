@@ -35,6 +35,13 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
 
         var csvRecords = await _csvParser.ParseAsync<CategoryCsvDto>(request.CsvStream, cancellationToken);
 
+        Console.WriteLine($"Parsed {csvRecords.Count} records:");
+        foreach (var record in csvRecords)
+        {
+            Console.WriteLine($"Code: '{record.Code}', Parent: '{record.ParentCode}', Name: '{record.Name}'");
+        }
+
+
         var validator = new ImportCategoryCsvDtoValidator();
         var validationErrors = _validationService.ValidateRecords(csvRecords, validator,
             r => r.Code);
@@ -57,10 +64,12 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
         foreach (var record in csvRecords)
         {
             var existing = existingCategories.FirstOrDefault(c => c.Code == record.Code);
-            if (existing != null)
+            //moze i dictionari ovako je O(n),dictionary O(1)
+
+            if (existing is not null)
             {
                 existing.Name = record.Name;
-                existing.ParentCode = record.ParentCode;
+                existing.ParentCode = string.IsNullOrWhiteSpace(record.ParentCode) ? null : record.ParentCode;
                 toUpdate.Add(existing);
             }
             else
