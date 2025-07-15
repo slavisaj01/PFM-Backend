@@ -18,7 +18,7 @@ public class TransactionRepository : ITransactionRepository
 
     public async Task AddAsync(Transaction transaction)
     {
-         _dbContext.Transactions.Add(transaction);
+        _dbContext.Transactions.Add(transaction);
     }
     public async Task AddRangeAsync(IEnumerable<Transaction> transactions)
     {
@@ -67,6 +67,17 @@ public class TransactionRepository : ITransactionRepository
             .ToListAsync();
 
         return new PagedResult<Transaction>(items, totalCount, query.PageNumber, query.PageSize);
+    }
+
+    public async Task<Transaction?> GetByIdAsync(string id, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Transactions.FirstOrDefaultAsync(t =>
+            t.Id == id, cancellationToken);
+    }
+
+    public async Task<Category?> GetByCodeAsync(string code, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Categories.FirstOrDefaultAsync(c => c.Code == code, cancellationToken);
     }
 }
 
