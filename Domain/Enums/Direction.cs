@@ -4,7 +4,10 @@ namespace PFM.Domain.Enums;
 
 public enum Direction
 {
-    [EnumMember(Value = "d")] D,
-    [EnumMember(Value = "c")] C
+    [EnumMember(Value = "d")] 
+    D,
+
+    [EnumMember(Value = "c")] 
+    C
 }
 

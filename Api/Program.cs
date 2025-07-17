@@ -1,8 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using PFM.Api.Middleware;
 using PFM.Infrastructure.DependecyInjection;
-using PFM.Infrastructure.Persistence.Data;
 using Serilog;
+using Newtonsoft.Json.Converters;
 
 namespace Api;
 
@@ -12,15 +11,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers()
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.Converters.Add(new StringEnumConverter());
+            });
 
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-        builder.Services.AddMediatR(cfg =>
-            cfg.RegisterServicesFromAssembly(typeof(PFM.Application.AssemblyMarker).Assembly));
-
-        builder.Services.AddInfrastructureServices();
+        builder.Services.AddInfrastructureServices(builder.Configuration);
         builder.Services.AddApplicationServices();
         builder.Services.AddSwaggerGen();
 

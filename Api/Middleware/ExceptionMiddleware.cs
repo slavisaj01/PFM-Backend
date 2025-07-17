@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using PFM.Application.Common.Exceptions;
 using PFM.Application.DTOs;
-using PFM.Application.Exceptions;
 using System.Net;
-using System.Text.Json;
 
 namespace PFM.Api.Middleware;
 
@@ -28,17 +26,17 @@ public class ExceptionMiddleware
         {
             _logger.LogError(dbEx, "Database update failed");
 
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = 503;
             context.Response.ContentType = "application/json";
 
             var error = new ValidationProblemDto
-            {
+            { 
                 Errors = new List<ValidationErrorDto>
                 {
                     new ValidationErrorDto
                     {
                         Tag = null,
-                        Error = "invalid-format",
+                        Error = "service-unavailable",
                         Message = "A database error occurred while processing your request. Please contact support."
                     }
                 }
