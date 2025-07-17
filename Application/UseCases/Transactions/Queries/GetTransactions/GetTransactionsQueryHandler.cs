@@ -1,4 +1,5 @@
 ﻿
+using AutoMapper;
 using MediatR;
 using PFM.Domain.Common;
 using PFM.Domain.Common.Pagination;
@@ -11,34 +12,26 @@ namespace PFM.Application.UseCases.Transactions.Queries.GetTransactions;
 public class GetTransactionsQueryHandler : IRequestHandler<GetTransactionsQuery, GetTransactionsResponse>
 {
     private readonly ITransactionRepository _repository;
+    private readonly IMapper _mapper;
 
-    public GetTransactionsQueryHandler(ITransactionRepository repository)
+    public GetTransactionsQueryHandler(ITransactionRepository repository,IMapper mapper)
     {
         _repository = repository;
+        _mapper = mapper;
     }
 
     public async Task<GetTransactionsResponse> Handle(GetTransactionsQuery request,
         CancellationToken cancellationToken)
     {
-        DateTime? startDate = !string.IsNullOrWhiteSpace(request.StartDate)
-            ? DateTime.Parse(request.StartDate)
-            : null;
-
-        DateTime? endDate = !string.IsNullOrWhiteSpace(request.EndDate)
-            ? DateTime.Parse(request.EndDate)
-            : null;
-
-        TransactionKind? transactionKind = ConvertToTransactionKind(request.TransactionKind);
-
         var parameters = new TransactionQueryParams
         {
             PageNumber = request.PageNumber,
             PageSize = request.PageSize,
             SortBy = request.SortBy,
             SortOrder = request.SortOrder,
-            TransactionKind = transactionKind,
-            StartDate = startDate,
-            EndDate = endDate
+            TransactionKind = _mapper.Map<TransactionKind?>(request.TransactionKind),
+            StartDate = _mapper.Map<DateTime?>(request.StartDate),
+            EndDate = _mapper.Map<DateTime?>(request.EndDate),
         };
 
         PagedResult<Transaction> result = await _repository.GetTransactionsAsync(parameters);
@@ -52,29 +45,6 @@ public class GetTransactionsQueryHandler : IRequestHandler<GetTransactionsQuery,
             TotalPages = result.TotalPages,
             SortBy = request.SortBy,
             SortOrder = request.SortOrder
-        };
-    }
-    private TransactionKind? ConvertToTransactionKind(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value)) return null;
-
-        return value.ToLower() switch
-        {
-            "dep" => TransactionKind.Dep,
-            "wdw" => TransactionKind.Wdw,
-            "pmt" => TransactionKind.Pmt,
-            "fee" => TransactionKind.Fee,
-            "inc" => TransactionKind.Inc,
-            "rev" => TransactionKind.Rev,
-            "adj" => TransactionKind.Adj,
-            "lnd" => TransactionKind.Lnd,
-            "lnr" => TransactionKind.Lnr,
-            "fcx" => TransactionKind.Fcx,
-            "aop" => TransactionKind.Aop,
-            "acl" => TransactionKind.Acl,
-            "spl" => TransactionKind.Spl,
-            "sal" => TransactionKind.Sal,
-            _ => null
         };
     }
 }
