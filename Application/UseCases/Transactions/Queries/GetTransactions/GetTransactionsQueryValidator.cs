@@ -4,6 +4,12 @@ namespace PFM.Application.UseCases.Transactions.Queries.GetTransactions;
 
 public class GetTransactionsQueryValidator : AbstractValidator<GetTransactionsQuery>
 {
+    private static readonly string[] ValidTransactionKinds =
+    {
+        "dep", "wdw", "pmt", "fee", "inc", "rev", "adj",
+        "lnd", "lnr", "fcx", "aop", "acl", "spl", "sal"
+    };
+
     public GetTransactionsQueryValidator()
     {
         RuleFor(x => x.PageNumber)
@@ -29,13 +35,22 @@ public class GetTransactionsQueryValidator : AbstractValidator<GetTransactionsQu
             .Must(BeAValidDateTime)
             .When(x => !string.IsNullOrWhiteSpace(x.EndDate))
             .WithMessage("EndDate must be a valid ISO 8601 date-time.");
+
+        RuleFor(x => x.TransactionKind)
+            .Must(IsValidTransactionKind)
+            .When(x => !string.IsNullOrWhiteSpace(x.TransactionKind))
+            .WithMessage("TransactionKind must be a valid transaction kind value.");
     }
 
     private bool BeAValidDateTime(string value)
     {
         return DateTime.TryParse(value, out _);
     }
-
+    private bool IsValidTransactionKind(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return true;
+        return ValidTransactionKinds.Contains(value.ToLower());
+    }
 }
 
 

@@ -28,13 +28,15 @@ public class GetTransactionsQueryHandler : IRequestHandler<GetTransactionsQuery,
             ? DateTime.Parse(request.EndDate)
             : null;
 
+        TransactionKind? transactionKind = ConvertToTransactionKind(request.TransactionKind);
+
         var parameters = new TransactionQueryParams
         {
             PageNumber = request.PageNumber,
             PageSize = request.PageSize,
             SortBy = request.SortBy,
             SortOrder = request.SortOrder,
-            TransactionKind = request.TransactionKind,
+            TransactionKind = transactionKind,
             StartDate = startDate,
             EndDate = endDate
         };
@@ -52,6 +54,28 @@ public class GetTransactionsQueryHandler : IRequestHandler<GetTransactionsQuery,
             SortOrder = request.SortOrder
         };
     }
+    private TransactionKind? ConvertToTransactionKind(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return null;
 
+        return value.ToLower() switch
+        {
+            "dep" => TransactionKind.Dep,
+            "wdw" => TransactionKind.Wdw,
+            "pmt" => TransactionKind.Pmt,
+            "fee" => TransactionKind.Fee,
+            "inc" => TransactionKind.Inc,
+            "rev" => TransactionKind.Rev,
+            "adj" => TransactionKind.Adj,
+            "lnd" => TransactionKind.Lnd,
+            "lnr" => TransactionKind.Lnr,
+            "fcx" => TransactionKind.Fcx,
+            "aop" => TransactionKind.Aop,
+            "acl" => TransactionKind.Acl,
+            "spl" => TransactionKind.Spl,
+            "sal" => TransactionKind.Sal,
+            _ => null
+        };
+    }
 }
 

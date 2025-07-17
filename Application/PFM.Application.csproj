@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="UseCases\Analytics\Commands\" />
     <Folder Include="UseCases\Categories\Queries\" />
   </ItemGroup>
 

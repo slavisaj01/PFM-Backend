@@ -9,6 +9,7 @@ using PFM.Application.Common.Exceptions;
 using PFM.Domain.Entities;
 using PFM.Domain.Interfaces;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 
 namespace PFM.Application.UseCases.Categories.Commands.ImportCategories;
 
@@ -18,16 +19,17 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICsvParser _csvParser;
     private readonly IMapper _mapper;
-    private readonly ICsvValidationService _validationService;
+    private readonly ILogger<ImportCategoriesCommandHandler> _logger;
 
     public ImportCategoriesCommandHandler(ICategoryRepository repository, IUnitOfWork unitOfWork, 
-        ICsvParser csvParser, IMapper mapper, ICsvValidationService csvValidation)
+        ICsvParser csvParser, IMapper mapper,
+        ILogger<ImportCategoriesCommandHandler> logger)
     {
         _unitOfWork = unitOfWork;
         _repository = repository;
         _csvParser = csvParser;
         _mapper = mapper;
-        _validationService = csvValidation;
+        _logger = logger;
     }
 
     public async Task Handle(ImportCategoriesCommand request, CancellationToken cancellationToken)
@@ -35,57 +37,82 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
 
         var csvRecords = await _csvParser.ParseAsync<CategoryCsvDto>(request.CsvStream, cancellationToken);
 
-        Console.WriteLine($"Parsed {csvRecords.Count} records:");
-        foreach (var record in csvRecords)
-        {
-            Console.WriteLine($"Code: '{record.Code}', Parent: '{record.ParentCode}', Name: '{record.Name}'");
-        }
-
-
+        
         var validator = new ImportCategoryCsvDtoValidator();
-        var validationErrors = _validationService.ValidateRecords(csvRecords, validator,
-            r => r.Code);
 
-        if (validationErrors.Count != 0)
-        {
-            throw new ValidationProblemException(new ValidationProblemDto
-            {
-                Errors = validationErrors
-            });
-        }
-
-        var codes = csvRecords.Select(r => r.Code).Distinct().ToList();
-
-        var existingCategories = await _repository.GetByCodesAsync(codes);
-
-        var toInsert = new List<Category>();
-        var toUpdate = new List<Category>();
+        var validRecords = new List<CategoryCsvDto>();
+        var invalidRecords = new List<(CategoryCsvDto Record, List<ValidationErrorDto> Errors)>();
 
         foreach (var record in csvRecords)
         {
-            var existing = existingCategories.FirstOrDefault(c => c.Code == record.Code);
-            //moze i dictionari ovako je O(n),dictionary O(1)
-
-            if (existing is not null)
+            var result = validator.Validate(record);
+            if (result.IsValid)
             {
-                existing.Name = record.Name;
-                existing.ParentCode = string.IsNullOrWhiteSpace(record.ParentCode) ? null : record.ParentCode;
-                toUpdate.Add(existing);
+                validRecords.Add(record);
             }
             else
             {
-                var category = _mapper.Map<Category>(record);
-                toInsert.Add(category);
+                var errors = result.Errors.Select(e => new ValidationErrorDto
+                {
+                    Tag = e.PropertyName,
+                    Error = ValidationErrorMapper.Map(e),
+                    Message = e.ErrorMessage
+                }).ToList();
+
+                invalidRecords.Add((record, errors));
             }
         }
 
-        if (toInsert.Any())
-            await _repository.AddRangeAsync(toInsert);
+        foreach (var (record, errors) in invalidRecords)
+        {
+            _logger.LogWarning("Invalid category record (Code: {Code}):", string
+                    .IsNullOrWhiteSpace(record.Code) ? "<empty>" : record.Code); ;
 
-        if (toUpdate.Any())
-            await _repository.UpdateRangeAsync(toUpdate);
+            foreach (var error in errors)
+            {
+                _logger.LogWarning(" - {Tag}: {Message}", error.Tag, error.Message);
+            }
+        }
 
-        await _unitOfWork.SaveChangesAsync();
+        if (validRecords.Any())
+        {
+            var codes = validRecords.Select(r => r.Code).Distinct().ToList();
+            var existingCategories = await _repository.GetByCodesAsync(codes);
+
+            var existingDict = existingCategories.ToDictionary(c => c.Code, StringComparer.OrdinalIgnoreCase);
+
+            var toInsert = new List<Category>();
+            var toUpdate = new List<Category>();
+
+            foreach (var record in validRecords)
+            {
+                if (existingDict.TryGetValue(record.Code, out var existing))
+                {
+                    existing.Name = record.Name;
+                    existing.ParentCode = string.IsNullOrWhiteSpace(record.ParentCode) ? null : record.ParentCode;
+                    toUpdate.Add(existing);
+                }
+                else
+                {
+                    var category = _mapper.Map<Category>(record);
+                    toInsert.Add(category);
+                }
+            }
+
+            if (toInsert.Any())
+                await _repository.AddRangeAsync(toInsert);
+
+            if (toUpdate.Any())
+                await _repository.UpdateRangeAsync(toUpdate);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation("Successfully imported {Count} categories.", validRecords.Count);
+        }
+
+        _logger.LogInformation("Category import completed. Valid: {ValidCount}, Invalid: {InvalidCount}",
+            validRecords.Count, invalidRecords.Count);
+
     }
 }
 

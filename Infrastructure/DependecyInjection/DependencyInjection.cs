@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PFM.Application.Common.Behaviors;
 using PFM.Application.Common.Interfaces;
 using PFM.Application.Common.Mappings;
-using PFM.Application.Common.Services;
+using PFM.Application.UseCases.Analytics.Queries.GetSpendingAnalytics;
 using PFM.Application.UseCases.Transactions.Queries.GetTransactions;
 using PFM.Domain.Common.Services;
 using PFM.Domain.Interfaces;
@@ -40,11 +40,12 @@ public static class DependencyInjection
             cfg.RegisterServicesFromAssembly(typeof(PFM.Application.AssemblyMarker).Assembly));
 
         services.AddValidatorsFromAssemblyContaining<GetTransactionsQueryValidator>();
+        services.AddValidatorsFromAssemblyContaining<GetSpendingAnalyticsQueryValidator>();
+
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-        services.AddAutoMapper(cfg => { }, typeof(CategoryProfile).Assembly);
 
-        services.AddScoped<ICsvValidationService, CsvValidationService>();
+        services.AddAutoMapper(cfg => { }, typeof(CategoryProfile).Assembly);
 
         services.AddScoped<ICategoryDomainService, CategoryDomainService>();
 

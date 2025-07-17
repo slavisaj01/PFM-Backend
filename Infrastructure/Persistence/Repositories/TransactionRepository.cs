@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PFM.Application.UseCases.Transactions.Queries.GetTransactions;
 using PFM.Domain.Common;
 using PFM.Domain.Common.Pagination;
 using PFM.Domain.Entities;
+using PFM.Domain.Enums;
 using PFM.Domain.Interfaces;
 using PFM.Infrastructure.Persistence.Data;
 
@@ -78,6 +80,27 @@ public class TransactionRepository : ITransactionRepository
     public async Task<Category?> GetByCodeAsync(string code, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Categories.FirstOrDefaultAsync(c => c.Code == code, cancellationToken);
+    }
+
+    public async Task<List<Transaction>> GetTransactionsForAnalyticsAsync(string? catcode, 
+        DateTime? startDate, DateTime? endDate, Direction? direction)
+    {
+        var query = _dbContext.Transactions.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(catcode))
+            query = query.Where(t => t.CatCode == catcode);
+
+        if (startDate.HasValue)
+            query = query.Where(t => t.Date >= startDate.Value);
+
+        if (endDate.HasValue)
+            query = query.Where(t => t.Date <= endDate.Value);
+
+        if (direction.HasValue)
+            query = query.Where(t => t.Direction == direction.Value);
+
+        return await query.ToListAsync();
+
     }
 }
 
