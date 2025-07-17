@@ -24,5 +24,6 @@ public class Transaction
 
     public string? CatCode { get; set; }  
     public Category? Category { get; set; }
+    public ICollection<TransactionSplit> Splits { get; set; } = new List<TransactionSplit>();
 }
 

@@ -10,5 +10,6 @@ public interface ICategoryRepository
     Task AddAsync(Category category);
     Task UpdateRangeAsync(IEnumerable<Category> categories);
     Task<List<Category>> GetByCodesAsync(IEnumerable<string> codes);
+    Task<List<string>> GetExistingCatcodesAsync(IEnumerable<string> catcodes);
 }
 

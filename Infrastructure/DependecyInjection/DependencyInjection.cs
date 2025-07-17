@@ -10,6 +10,7 @@ using PFM.Application.Common.Interfaces;
 using PFM.Application.Common.Mappings;
 using PFM.Application.UseCases.Analytics.Queries.GetSpendingAnalytics;
 using PFM.Application.UseCases.Transactions.Queries.GetTransactions;
+using PFM.Application.UseCases.Transactions.Commands.SplitTransaction;
 using PFM.Domain.Common.Services;
 using PFM.Domain.Interfaces;
 using PFM.Infrastructure.Parsers;
@@ -28,6 +29,7 @@ public static class DependencyInjection
 
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<ITransactionSplitRepository, TransactionSplitRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ICsvParser, CsvParser>();
 
@@ -41,6 +43,7 @@ public static class DependencyInjection
 
         services.AddValidatorsFromAssemblyContaining<GetTransactionsQueryValidator>();
         services.AddValidatorsFromAssemblyContaining<GetSpendingAnalyticsQueryValidator>();
+        services.AddValidatorsFromAssemblyContaining<SplitTransactionCommandValidator>();
 
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 

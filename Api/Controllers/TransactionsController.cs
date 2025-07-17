@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PFM.Application.DTOs;
 using PFM.Application.UseCases.Transactions.Commands.CategorizeTransaction;
 using PFM.Application.UseCases.Transactions.Commands.ImportTransactions;
+using PFM.Application.UseCases.Transactions.Commands.SplitTransaction;
 using PFM.Application.UseCases.Transactions.Queries.GetTransactions;
 using PFM.Domain.Common.Pagination;
 using PFM.Domain.Entities;
@@ -48,7 +49,18 @@ public class TransactionsController : ControllerBase
         return Ok();
     }
 
+    [HttpPost("{id}/split")]
+    public async Task<IActionResult> SplitTransaction(string id, [FromBody] List<TransactionSplitDto> splits)
+    {
+        var command = new SplitTransactionCommand
+        {
+            Id = id,
+            Splits = splits
+        };
 
+        await _mediator.Send(command);
+        return Ok();
+    }
 
     [HttpGet("test-exception")]
     public IActionResult ThrowTestException()

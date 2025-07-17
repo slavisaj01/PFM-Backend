@@ -13,10 +13,13 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Category> Categories { get; set; }
 
+    public DbSet<TransactionSplit> TransactionSplits { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new CategoryEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new TransactionEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new TransactionSplitEntityTypeConfiguration());
         base.OnModelCreating(modelBuilder);
     }
 }

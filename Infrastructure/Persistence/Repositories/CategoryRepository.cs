@@ -39,6 +39,14 @@ public class CategoryRepository : ICategoryRepository
         .ToListAsync();
     }
 
+    public async Task<List<string>> GetExistingCatcodesAsync(IEnumerable<string> catcodes)
+    {
+        return await _dbContext.Categories
+        .Where(c => catcodes.Contains(c.Code))
+        .Select(c => c.Code)
+        .ToListAsync();
+    }
+
     public Task UpdateRangeAsync(IEnumerable<Category> categories)
     {
         _dbContext.Categories.UpdateRange(categories);
