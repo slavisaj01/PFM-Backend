@@ -18,7 +18,7 @@ public class Transaction
 
     public string Currency { get; set; }
 
-    public int? Mcc { get; set; }
+    public MccCode? Mcc { get; set; }
 
     public TransactionKind Kind { get; set; }
 

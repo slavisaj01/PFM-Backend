@@ -1,5 +1,5 @@
 ﻿using PFM.Application.Common;
-using LoanManagement.Domain.Interfaces;
+using PFM.Application.Common.Interfaces;
 using MediatR;
 using PFM.Application.Common.Constants;
 using PFM.Domain.Interfaces;

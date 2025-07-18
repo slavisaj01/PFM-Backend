@@ -1,7 +1,7 @@
-﻿using LoanManagement.Domain.Interfaces;
+﻿using PFM.Application.Common.Interfaces;
 using PFM.Infrastructure.Persistence.Data;
 
-namespace LoanManagement.Infrastructure.Persistence;
+namespace PFM.Infrastructure.Persistence.Repositories;
 
 public class UnitOfWork : IUnitOfWork
 {

@@ -2,6 +2,7 @@
 using PFM.Application.DTOs;
 using PFM.Domain.Entities;
 using PFM.Domain.Enums;
+using System.Globalization;
 
 namespace PFM.Application.Common.Mappings;
 
@@ -12,7 +13,8 @@ public class TransactionProfile : Profile
         CreateMap<TransactionCsvDto, Transaction>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.BeneficiaryName, opt => opt.MapFrom(src => src.BeneficiaryName))
-            .ForMember(dest => dest.Date, opt => opt.MapFrom(src => DateTime.Parse(src.Date)))
+            .ForMember(dest => dest.Date, opt => opt.MapFrom(src =>
+                 DateTime.SpecifyKind(DateTime.ParseExact(src.Date, "M/d/yyyy", CultureInfo.InvariantCulture), DateTimeKind.Utc)))
             .ForMember(dest => dest.Direction, opt => opt.MapFrom(src => Enum.Parse<Direction>(src.Direction, true)))
             .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => (decimal)src.Amount!.Value))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))

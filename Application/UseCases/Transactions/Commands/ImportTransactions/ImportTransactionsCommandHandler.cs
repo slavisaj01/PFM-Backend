@@ -1,5 +1,4 @@
-﻿using LoanManagement.Domain.Interfaces;
-using MediatR;
+﻿using MediatR;
 using PFM.Application.Common.Helpers;
 using PFM.Application.Common.Interfaces;
 using PFM.Application.DTOs;

@@ -1,5 +1,5 @@
 ﻿
-namespace LoanManagement.Domain.Interfaces;
+namespace PFM.Application.Common.Interfaces;
 
 public interface IUnitOfWork
 {

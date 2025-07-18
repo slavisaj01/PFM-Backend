@@ -27,8 +27,8 @@ public class GetTransactionsQueryHandler : IRequestHandler<GetTransactionsQuery,
         {
             PageNumber = request.PageNumber,
             PageSize = request.PageSize,
-            SortBy = request.SortBy,
-            SortOrder = request.SortOrder,
+            SortBy = string.IsNullOrWhiteSpace(request.SortBy) ? "date" : request.SortBy,
+            SortOrder = string.IsNullOrWhiteSpace(request.SortOrder) ? "desc" : request.SortOrder,
             TransactionKind = _mapper.Map<TransactionKind?>(request.TransactionKind),
             StartDate = _mapper.Map<DateTime?>(request.StartDate),
             EndDate = _mapper.Map<DateTime?>(request.EndDate),
@@ -43,8 +43,8 @@ public class GetTransactionsQueryHandler : IRequestHandler<GetTransactionsQuery,
             Page = result.PageNumber,
             PageSize = result.PageSize,
             TotalPages = result.TotalPages,
-            SortBy = request.SortBy,
-            SortOrder = request.SortOrder
+            SortBy = parameters.SortBy,
+            SortOrder = parameters.SortOrder
         };
     }
 }

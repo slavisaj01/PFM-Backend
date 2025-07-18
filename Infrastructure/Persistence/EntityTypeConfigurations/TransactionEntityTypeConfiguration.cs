@@ -28,7 +28,7 @@ public class TransactionEntityTypeConfiguration : IEntityTypeConfiguration<Trans
 
         builder.Property(t => t.Amount)
             .IsRequired()
-            .HasColumnType("decimal(18,2)");
+            .HasPrecision(18, 2);
 
         builder.Property(t => t.Description)
             .HasMaxLength(500);

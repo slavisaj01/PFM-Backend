@@ -9,7 +9,7 @@ public class TransactionQueryParams : PaginationParams
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public string? SortBy { get; set; }
-    public string? SortOrder { get; set; } = "asc";
+    public string? SortOrder { get; set; } = "desc";
 
 }
 

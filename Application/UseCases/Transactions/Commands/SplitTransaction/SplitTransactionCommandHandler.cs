@@ -1,6 +1,4 @@
-﻿
-using LoanManagement.Domain.Interfaces;
-using MediatR;
+﻿using MediatR;
 using PFM.Application.Common;
 using PFM.Application.Common.Constants;
 using PFM.Application.Common.Exceptions;
