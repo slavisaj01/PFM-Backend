@@ -36,10 +36,29 @@ public class GetTransactionsQueryValidator : AbstractValidator<GetTransactionsQu
             .When(x => !string.IsNullOrWhiteSpace(x.EndDate))
             .WithMessage("EndDate must be a valid ISO 8601 date-time.");
 
-        RuleFor(x => x.TransactionKind)
-            .Must(IsValidTransactionKind)
-            .When(x => !string.IsNullOrWhiteSpace(x.TransactionKind))
-            .WithMessage("TransactionKind must be a valid transaction kind value.");
+        RuleFor(x => x)
+            .Must(x =>
+            {
+                if (!string.IsNullOrWhiteSpace(x.StartDate) && !string.IsNullOrWhiteSpace(x.EndDate) &&
+                    DateTime.TryParse(x.StartDate, out var start) &&
+                    DateTime.TryParse(x.EndDate, out var end))
+                {
+                    return start <= end;
+                }
+
+                return true; // preskoči ako nije validan datum (biće uhvaćen u prethodnim pravilima)
+            })
+            .WithMessage("StartDate must be less than or equal to EndDate.")
+            .WithErrorCode("invalid-range")
+            .WithState(_ => "StartDate");
+
+
+        RuleForEach(x => x.TransactionKinds)
+            .Must(kind => ValidTransactionKinds.Contains(kind.ToLower()))
+            .WithMessage("Each TransactionKind must be a valid transaction kind value.");
+
+
+
     }
 
     private bool BeAValidDateTime(string value)

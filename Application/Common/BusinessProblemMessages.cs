@@ -10,7 +10,8 @@ public static class BusinessProblemMessages
         [BusinessProblemCodes.CategoryAlreadyExists] = (57450, "Category already exists"),
         [BusinessProblemCodes.CategoryInUse] = (57451, "Cannot delete category as it is in use"),
         [BusinessProblemCodes.ProvidedCategoryDoesNotExist] = (47453, "Provided category does not exist"),
-        [BusinessProblemCodes.SplitAmountOverTransactionAmount] = (57452, "Split amount is larger than transaction amount")
+        [BusinessProblemCodes.SplitAmountOverTransactionAmount] = (57452, "Split amount is larger than transaction amount"),
+        [BusinessProblemCodes.InvalidSplitCount] = (57454, "Invalid number of splits"),
     };
 
     public static BusinessException Create(string problemCode, string? details = null)

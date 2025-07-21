@@ -34,10 +34,27 @@ public class TransactionsController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<GetTransactionsResponse>> GetTransactions(
-        [FromQuery] GetTransactionsQuery getTransactionsQuery)
+    [FromQuery(Name = "transaction-kind")] List<string>? kinds,
+    [FromQuery(Name = "start-date")] string? startDate,
+    [FromQuery(Name = "end-date")] string? endDate,
+    [FromQuery(Name = "sort-by")] string? sortBy,
+    [FromQuery(Name = "sort-order")] string? sortOrder,
+    [FromQuery(Name = "page-number")] int pageNumber = 1,
+    [FromQuery(Name = "page-size")] int pageSize = 10)
     {
-        var transaction = await _mediator.Send(getTransactionsQuery);
-        return Ok(transaction);
+        var query = new GetTransactionsQuery
+        {
+            TransactionKinds = kinds,
+            StartDate = startDate,
+            EndDate = endDate,
+            SortBy = sortBy,
+            SortOrder = sortOrder,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+
+        var result = await _mediator.Send(query);
+        return Ok(result);
     }
 
     [HttpPost("{id}/categorize")]

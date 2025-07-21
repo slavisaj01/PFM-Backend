@@ -28,6 +28,14 @@ public class SplitTransactionCommandHandler : IRequestHandler<SplitTransactionCo
 
     public async Task<Unit> Handle(SplitTransactionCommand request, CancellationToken cancellationToken)
     {
+        if (request.Splits == null || request.Splits.Count <= 1)
+        {
+            throw BusinessProblemMessages.Create(
+                BusinessProblemCodes.InvalidSplitCount,
+                "At least two splits are required to split a transaction."
+            );
+        }
+
         var transaction = await _transactionRepository.GetByIdAsync(request.Id);
         if (transaction is null)
             throw new BusinessException(

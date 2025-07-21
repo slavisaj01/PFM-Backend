@@ -13,6 +13,17 @@ public class EnumProfile : Profile
 
         CreateMap<string, Direction?>()
             .ConvertUsing(src => ConvertToDirection(src));
+
+        CreateMap<List<string>, List<TransactionKind>>()
+            .ConvertUsing(src =>
+                src
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Select(x => ConvertToTransactionKind(x))
+                    .Where(x => x.HasValue)
+                    .Select(x => x.Value)
+                    .ToList()
+            );
+
     }
 
     private static TransactionKind? ConvertToTransactionKind(string? value)

@@ -37,7 +37,8 @@ public class GetSpendingAnalyticsQueryHandler : IRequestHandler<GetSpendingAnaly
                 Amount = Math.Round((double)g.Sum(t => t.Amount), 2),
                 Count = g.Count()
             })
-            .ToList();
+            .ToList();//bolje rucno mapiranje jer imam group by i select
+                      //koji rucno transaformisu Transaction u dto sto je normalno kod grupisanja i agregacija
 
         return new GetSpendingAnalyticsResponse
         {

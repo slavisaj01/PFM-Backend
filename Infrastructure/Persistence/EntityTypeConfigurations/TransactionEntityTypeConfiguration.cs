@@ -20,6 +20,7 @@ public class TransactionEntityTypeConfiguration : IEntityTypeConfiguration<Trans
             .HasMaxLength(200);
 
         builder.Property(t => t.Date)
+            .HasColumnType("timestamp with time zone")
             .IsRequired();
 
         builder.Property(t => t.Direction)

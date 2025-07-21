@@ -39,7 +39,7 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
                 {
                     Errors = failures.Select(error => new ValidationErrorDto
                     {
-                        Tag = error.PropertyName,
+                        Tag = error.CustomState?.ToString() ?? error.PropertyName,
                         Error = ValidationErrorMapper.Map(error),
                         Message = error.ErrorMessage
                     }).ToList()

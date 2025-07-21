@@ -10,7 +10,7 @@ public class TransactionSplit
 
     public decimal Amount { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
 
     public Transaction? Transaction { get; set; }

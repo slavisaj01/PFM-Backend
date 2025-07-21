@@ -1,7 +1,8 @@
 using PFM.Api.Middleware;
 using PFM.Infrastructure.DependecyInjection;
 using Serilog;
-using Newtonsoft.Json.Converters;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Api;
 
@@ -12,9 +13,10 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddControllers()
-            .AddNewtonsoftJson(options =>
+            .AddJsonOptions(options =>
             {
-                options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); // Enum kao string
+                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.KebabCaseLower; // camelCase -> kebab-case
             });
 
         builder.Services.AddInfrastructureServices(builder.Configuration);

@@ -28,6 +28,9 @@ public class ValidationErrorMapper
                 message.Contains("must be 3 characters or more"))
             return "min-length";
 
+        if (message.Contains("startdate must be less than or equal to enddate"))
+            return "invalid-range";
+
         return failure.ErrorCode switch
         {
             "NotEmptyValidator" or "NotNullValidator" => "required",

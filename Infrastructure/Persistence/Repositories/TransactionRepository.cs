@@ -29,11 +29,13 @@ public class TransactionRepository : ITransactionRepository
 
     public async Task<PagedResult<Transaction>> GetTransactionsAsync(TransactionQueryParams query)
     {
-        var transactions = _dbContext.Transactions.AsQueryable();
+        var transactions = _dbContext.Transactions
+            .Include(t => t.Splits)
+            .AsQueryable();
 
-        if (query.TransactionKind.HasValue)
+        if (query.TransactionKinds is { Count: > 0 })
         {
-            transactions = transactions.Where(t => t.Kind == query.TransactionKind.Value);
+            transactions = transactions.Where(t => query.TransactionKinds.Contains(t.Kind));
         }
 
         if (query.StartDate.HasValue)

@@ -9,7 +9,7 @@ public class GetTransactionsQuery : PaginationParams,IRequest<GetTransactionsRes
 {
     public string? SortBy { get; set; }
     public string? SortOrder { get; set; }
-    public string? TransactionKind { get; set; }
+    public List<string>? TransactionKinds { get; set; }
     public string? StartDate { get; set; }
     public string? EndDate { get; set; }
 }

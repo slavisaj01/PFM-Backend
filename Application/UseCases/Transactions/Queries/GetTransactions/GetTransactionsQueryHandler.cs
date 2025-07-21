@@ -1,6 +1,7 @@
 ﻿
 using AutoMapper;
 using MediatR;
+using PFM.Application.DTOs;
 using PFM.Domain.Common;
 using PFM.Domain.Common.Pagination;
 using PFM.Domain.Entities;
@@ -29,16 +30,18 @@ public class GetTransactionsQueryHandler : IRequestHandler<GetTransactionsQuery,
             PageSize = request.PageSize,
             SortBy = string.IsNullOrWhiteSpace(request.SortBy) ? "date" : request.SortBy,
             SortOrder = string.IsNullOrWhiteSpace(request.SortOrder) ? "desc" : request.SortOrder,
-            TransactionKind = _mapper.Map<TransactionKind?>(request.TransactionKind),
+            TransactionKinds = _mapper.Map<List<TransactionKind>>(request.TransactionKinds),
             StartDate = _mapper.Map<DateTime?>(request.StartDate),
             EndDate = _mapper.Map<DateTime?>(request.EndDate),
         };
 
         PagedResult<Transaction> result = await _repository.GetTransactionsAsync(parameters);
 
+        var dtoItems = _mapper.Map<IEnumerable<TransactionWithSplitsDto>>(result.Items);
+
         return new GetTransactionsResponse
         {
-            Items = result.Items,
+            Items = dtoItems,
             TotalCount = result.TotalCount,
             Page = result.PageNumber,
             PageSize = result.PageSize,

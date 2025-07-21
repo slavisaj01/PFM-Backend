@@ -1,5 +1,4 @@
-﻿using PFM.Domain.Common.Pagination;
-using PFM.Domain.Entities;
+﻿using PFM.Application.DTOs;
 using System.Text.Json.Serialization;
 
 namespace PFM.Application.UseCases.Transactions.Queries.GetTransactions;
@@ -7,7 +6,7 @@ namespace PFM.Application.UseCases.Transactions.Queries.GetTransactions;
 public class GetTransactionsResponse
 {
     [JsonPropertyName("items")]
-    public IEnumerable<Transaction> Items { get; set; } = [];
+    public IEnumerable<TransactionWithSplitsDto> Items { get; set; } = [];
 
     [JsonPropertyName("total-count")]
     public int TotalCount { get; set; }

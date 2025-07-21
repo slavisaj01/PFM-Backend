@@ -25,6 +25,7 @@ public class TransactionSplitEntityTypeConfiguration : IEntityTypeConfiguration<
                 .HasPrecision(18, 2);
 
         builder.Property(x => x.CreatedAt)
+                .HasColumnType("timestamp with time zone")
                .IsRequired();
 
         builder.HasOne(x => x.Transaction)

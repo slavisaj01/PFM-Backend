@@ -5,7 +5,7 @@ namespace PFM.Application.DTOs;
 
 public class SpendingInCategoryDto
 {
-    [JsonPropertyName("catcode")]
+    [JsonPropertyName("cat-code")]
     public string Catcode { get; set; } = string.Empty;
 
     [JsonPropertyName("amount")]

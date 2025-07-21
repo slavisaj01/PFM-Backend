@@ -20,6 +20,24 @@ public class GetSpendingAnalyticsQueryValidator : AbstractValidator<GetSpendingA
         RuleFor(x => x.EndDate)
             .Must(BeValidDate).When(x => !string.IsNullOrWhiteSpace(x.EndDate))
             .WithMessage("Invalid date format for end-date");
+
+        RuleFor(x => x)
+            .Must(x =>
+            {
+                if (!string.IsNullOrWhiteSpace(x.StartDate) && !string.IsNullOrWhiteSpace(x.EndDate) &&
+                    DateTime.TryParse(x.StartDate, out var start) &&
+                    DateTime.TryParse(x.EndDate, out var end))
+                {
+                    return start <= end;
+                }
+
+                return true; // preskoči ako nije validan datum (biće uhvaćen u prethodnim pravilima)
+            })
+            .WithMessage("StartDate must be less than or equal to EndDate.")
+            .WithErrorCode("invalid-range")
+            .WithState(_ => "StartDate");
+
+
     }
 
     private bool BeValidDate(string? date) =>
