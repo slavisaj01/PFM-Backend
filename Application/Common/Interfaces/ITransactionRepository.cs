@@ -8,7 +8,6 @@ namespace PFM.Domain.Interfaces;
 
 public interface ITransactionRepository
 {
-    Task AddAsync(Transaction transaction);
     Task AddRangeAsync(IEnumerable<Transaction> transactions);
     Task<PagedResult<Transaction>> GetTransactionsAsync(TransactionQueryParams query);
     Task<Transaction?> GetByIdAsync(string id, CancellationToken cancellationToken = default);
@@ -19,5 +18,7 @@ public interface ITransactionRepository
         DateTime? endDate,
         Direction? direction
         );
+    Task<List<Transaction>> GetUncategorizedAsync();
+    void UpdateRange(IEnumerable<Transaction> transactions);
 }
 

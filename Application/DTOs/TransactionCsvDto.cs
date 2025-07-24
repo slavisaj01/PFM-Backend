@@ -8,7 +8,7 @@ public class TransactionCsvDto
     public string Id { get; set; }
 
     [Name("beneficiary-name")]
-    public string BeneficiaryName { get; set; }
+    public required string BeneficiaryName { get; set; }
 
     [Name("date")]
     public string? Date { get; set; }

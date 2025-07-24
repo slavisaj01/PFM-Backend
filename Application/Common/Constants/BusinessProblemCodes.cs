@@ -11,4 +11,6 @@ public static class BusinessProblemCodes
     public const string ProvidedTransactionDoesNotExist = "provided-transaction-does-not-exist";
     public const string CsvParsingError = "csv-parsing-error";
     public const string TransactionAlreadyExists = "transaction-already-exists";
+    public const string InvalidCategorizationRule = "invalid-rule";
+    public const string FailedToLoadCategorizationRules = "rule-loading-failed";
 }

@@ -14,7 +14,10 @@ public static class BusinessProblemMessages
         [BusinessProblemCodes.InvalidSplitCount] = (57454, "Invalid number of splits"),
         [BusinessProblemCodes.ProvidedTransactionDoesNotExist] = (47455, "Provided transaction does not exist"),
         [BusinessProblemCodes.CsvParsingError] = (47456, "CSV file could not be parsed. The format or structure is invalid."),
-        [BusinessProblemCodes.TransactionAlreadyExists] = (57456, "Transaction already exists")
+        [BusinessProblemCodes.TransactionAlreadyExists] = (57456, "Transaction already exists"),
+        [BusinessProblemCodes.InvalidCategorizationRule] = (47457, "Invalid auto-categorization rule"),
+        [BusinessProblemCodes.FailedToLoadCategorizationRules] = (47458, "Categorization rules could not be loaded from the configuration file")
+
     };
 
     public static BusinessException Create(string problemCode, string? details = null)

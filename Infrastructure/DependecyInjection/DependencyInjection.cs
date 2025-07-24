@@ -7,13 +7,14 @@ using PFM.Application.Common.Behaviors;
 using PFM.Application.Common.Interfaces;
 using PFM.Application.Common.Mappings;
 using PFM.Application.UseCases.Analytics.Queries.GetSpendingAnalytics;
-using PFM.Application.UseCases.Transactions.Queries.GetTransactions;
 using PFM.Application.UseCases.Transactions.Commands.SplitTransaction;
+using PFM.Application.UseCases.Transactions.Queries.GetTransactions;
 using PFM.Domain.Common.Services;
 using PFM.Domain.Interfaces;
 using PFM.Infrastructure.Parsers;
 using PFM.Infrastructure.Persistence.Data;
 using PFM.Infrastructure.Persistence.Repositories;
+using PFM.Infrastructure.Services;
 
 namespace PFM.Infrastructure.DependecyInjection;
 
@@ -30,6 +31,8 @@ public static class DependencyInjection
         services.AddScoped<ITransactionSplitRepository, TransactionSplitRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ICsvParser, CsvParser>();
+
+        services.AddSingleton<IAutoCategorizationRuleProvider, JsonAutoCategorizationRuleProvider>();
 
         return services;
     }

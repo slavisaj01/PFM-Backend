@@ -1,0 +1,190 @@
+{
+  "rules": [
+    {
+      "field": "mcc",
+      "description": "Food",
+      "catcode": "39",
+      "predicate": "Mcc == 5811"
+    },
+    {
+      "field": "beneficiary-name",
+      "description": "Gasoline",
+      "catcode": "4",
+      "predicate": "BeneficiaryName.ToLower().Contains(\"chevron\") || BeneficiaryName.ToLower().Contains(\"shell\")"
+    },
+    {
+      "field": "description",
+      "description": "Internet",
+      "catcode": "10",
+      "predicate": "Description.ToLower().Contains(\"internet\")"
+    },
+    {
+      "field": "description",
+      "description": "Mobile",
+      "catcode": "11",
+      "predicate": "Description.ToLower().Contains(\"mobile\")"
+    },
+    {
+      "field": "description",
+      "description": "Television",
+      "catcode": "12",
+      "predicate": "Description.ToLower().Contains(\"television\")"
+    },
+    {
+      "field": "mcc",
+      "description": "Car rent",
+      "catcode": "105",
+      "predicate": "Mcc == 7519"
+    },
+    {
+      "field": "description",
+      "description": "Rent",
+      "catcode": "58",
+      "predicate": "Description.ToLower().Contains(\"rent\")"
+    },
+    {
+      "field": "mcc",
+      "description": "Food market",
+      "catcode": "38",
+      "predicate": "Mcc == 5499"
+    },
+    {
+      "field": "description",
+      "description": "Tuition",
+      "catcode": "17",
+      "predicate": "Description.ToLower().Contains(\"tuition\")"
+    },
+    {
+      "field": "beneficiary-name",
+      "description": "Gym",
+      "catcode": "47",
+      "predicate": "BeneficiaryName.ToLower().Contains(\"fit\")"
+    },
+    {
+      "field": "mcc",
+      "description": "Computers and software",
+      "catcode": "90",
+      "predicate": "Mcc == 5045"
+    },
+    {
+      "field": "mcc",
+      "description": "Books",
+      "catcode": "88",
+      "predicate": "Mcc == 5192"
+    },
+    {
+      "field": "mcc",
+      "description": "Home supply",
+      "catcode": "56",
+      "predicate": "Mcc == 5200"
+    },
+    {
+      "field": "mcc",
+      "description": "Sports store",
+      "catcode": "50",
+      "predicate": "Mcc == 5655"
+    },
+    {
+      "field": "description",
+      "description": "Medicine",
+      "catcode": "49",
+      "predicate": "Description.ToLower().Contains(\"medicine\")"
+    },
+    {
+      "field": "mcc",
+      "description": "Pet shops and pet food",
+      "catcode": "84",
+      "predicate": "Mcc == 5995"
+    },
+    {
+      "field": "mcc",
+      "description": "Music",
+      "catcode": "22",
+      "predicate": "Mcc == 5733"
+    },
+    {
+      "field": "mcc",
+      "description": "Gifts",
+      "catcode": "42",
+      "predicate": "Mcc == 5947"
+    },
+    {
+      "field": "mcc",
+      "description": "Insurance",
+      "catcode": "33",
+      "predicate": "Mcc == 6300"
+    },
+    {
+      "field": "description",
+      "description": "Hairdresser and hair styling",
+      "catcode": "80",
+      "predicate": "Description.ToLower().Contains(\"hair\")"
+    },
+    {
+      "field": "beneficiary-name",
+      "description": "Car leasing",
+      "catcode": "3",
+      "predicate": "BeneficiaryName.ToLower().Contains(\"leasing\")"
+    },
+    {
+      "field": "mcc",
+      "description": "Parking",
+      "catcode": "5",
+      "predicate": "Mcc == 7523"
+    },
+    {
+      "field": "mcc",
+      "description": "Doctors or physicians",
+      "catcode": "45",
+      "predicate": "Mcc == 8011"
+    },
+    {
+      "field": "mcc",
+      "description": "Spa and massage",
+      "catcode": "82",
+      "predicate": "Mcc == 8050"
+    },
+    {
+      "field": "mcc",
+      "description": "Tax payment",
+      "catcode": "96",
+      "predicate": "Mcc == 9311"
+    },
+    {
+      "field": "beneficiary-name",
+      "description": "Books",
+      "catcode": "15",
+      "predicate": "BeneficiaryName.ToLower().Contains(\"book\")"
+    },
+    {
+      "field": "description",
+      "description": "Loans",
+      "catcode": "77",
+      "predicate": "Description.ToLower().Contains(\"loan\")"
+    },
+    {
+      "field": "description",
+      "description": "Allowance",
+      "catcode": "67",
+      "predicate": "Description.ToLower().Contains(\"allowance\")"
+    },
+    {
+      "field": "description",
+      "description": "Charity",
+      "catcode": "41",
+      "predicate": "Description.ToLower().Contains(\"charity\")"
+    },
+    {
+      "field": "description",
+      "description": "Salary",
+      "catcode": "62",
+      "predicate": "Description.ToLower().Contains(\"salary\")"
+    },
+    {
+      "field": "beneficiary-name",
+      "description": "Revolut",
+      "catcode": "25",
+      "predicate": "BeneficiaryName.ToLower().Contains(\"revolut\")"
+    }
+  ]
+}

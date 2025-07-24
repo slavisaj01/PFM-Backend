@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PFM.Application.Common.Exceptions;
 using PFM.Application.DTOs;
+using PFM.Application.UseCases.Transactions.Commands.AutoCategorizeTransactions;
 using PFM.Application.UseCases.Transactions.Commands.CategorizeTransaction;
 using PFM.Application.UseCases.Transactions.Commands.ImportTransactions;
 using PFM.Application.UseCases.Transactions.Commands.SplitTransaction;
@@ -110,6 +111,13 @@ public class TransactionsController : ControllerBase
         };
 
         await _mediator.Send(command);
+        return Ok();
+    }
+
+    [HttpPost("auto-categorize")]
+    public async Task<IActionResult> AutoCategorize()
+    {
+        await _mediator.Send(new AutoCategorizeTransactionsCommand());
         return Ok();
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PFM.Application.UseCases.Transactions.Queries.GetTransactions;
 using PFM.Domain.Common;
 using PFM.Domain.Common.Pagination;
 using PFM.Domain.Entities;
@@ -18,10 +17,6 @@ public class TransactionRepository : ITransactionRepository
         _dbContext = dbContext;
     }
 
-    public async Task AddAsync(Transaction transaction)
-    {
-        _dbContext.Transactions.Add(transaction);
-    }
     public async Task AddRangeAsync(IEnumerable<Transaction> transactions)
     {
         await _dbContext.Transactions.AddRangeAsync(transactions);
@@ -102,7 +97,19 @@ public class TransactionRepository : ITransactionRepository
             query = query.Where(t => t.Direction == direction.Value);
 
         return await query.ToListAsync();
-
     }
+
+    public async Task<List<Transaction>> GetUncategorizedAsync()
+    {
+        return await _dbContext.Transactions
+            .Where(t => t.CatCode == null)
+            .ToListAsync();
+    }
+
+    public void UpdateRange(IEnumerable<Transaction> transactions)
+    {
+        _dbContext.Transactions.UpdateRange(transactions);
+    }
+
 }
 
