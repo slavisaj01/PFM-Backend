@@ -1,11 +1,16 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using CsvHelper;
+using MediatR;
+using Microsoft.Extensions.Logging;
+using PFM.Application.Common;
+using PFM.Application.Common.Constants;
+using PFM.Application.Common.Exceptions;
 using PFM.Application.Common.Helpers;
 using PFM.Application.Common.Interfaces;
 using PFM.Application.DTOs;
-using PFM.Domain.Interfaces;
-using AutoMapper;
-using Microsoft.Extensions.Logging;
 using PFM.Domain.Entities;
+using PFM.Domain.Interfaces;
+using System.Text;
 
 namespace PFM.Application.UseCases.Transactions.Commands.ImportTransactions;
 
@@ -30,8 +35,17 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
 
     public async Task Handle(ImportTransactionsCommand request, CancellationToken cancellationToken)
     {
-        var csvRecords = await _csvParser.ParseAsync<TransactionCsvDto>
-            (request.CsvStream, cancellationToken);
+        List<TransactionCsvDto> csvRecords;
+        try
+        {
+            csvRecords = await _csvParser.ParseAsync<TransactionCsvDto>
+               (request.CsvStream, cancellationToken);
+        }
+        catch (CsvHelperException ex)
+        {
+            throw BusinessProblemMessages.Create(BusinessProblemCodes.CsvParsingError,
+                "Ensure the CSV file has the correct delimiter, headers, and consistent structure.");
+        }
 
         var validator = new ImportTransactionCsvDtoValidator();//mozda DI umesto rucno kreiranje
 
@@ -59,13 +73,44 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
             }
         }
 
-        foreach (var (record, errors) in invalidRecords)
+        if (invalidRecords.Count != 0)
         {
-            _logger.LogWarning("Invalid record (ID: {Id}):", string.IsNullOrWhiteSpace
-                (record.Id) ? "<empty>" : record.Id);
-            foreach (var error in errors)
+            Directory.CreateDirectory("logs"); // ako ne postoji
+
+            var logBuilder = new StringBuilder();
+
+            var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+
+            logBuilder.AppendLine($"=== Invalid transactions at {timestamp} ===");
+            logBuilder.AppendLine();
+
+            foreach (var (record, errors) in invalidRecords)
             {
-                _logger.LogWarning(" - {Tag}: {Message}", error.Tag, error.Message);
+                logBuilder.AppendLine($"(ID: {(!string.IsNullOrWhiteSpace(record.Id) ? record.Id : "<empty>")})");
+
+                foreach (var error in errors)
+                {
+                    logBuilder.AppendLine($" - {error.Tag}: {error.Message}");
+                }
+
+                logBuilder.AppendLine();
+            }
+
+            logBuilder.AppendLine($"Imported: {validRecords.Count} / Skipped: {invalidRecords.Count}");
+            logBuilder.AppendLine("----------------------------------------------");
+            logBuilder.AppendLine();
+
+            await File.AppendAllTextAsync("logs/invalid-transactions.txt", logBuilder.ToString());
+        }
+
+        foreach (var record in validRecords)
+        {
+            var existing = await _repository.GetByIdAsync(record.Id);
+            if (existing is not null)
+            {
+                throw BusinessProblemMessages.Create(BusinessProblemCodes.TransactionAlreadyExists,
+                    $"Transaction with ID '{record.Id}' already exists. Transaction IDs must be unique."
+);
             }
         }
 
@@ -74,11 +119,7 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
             var transactions = _mapper.Map<List<Transaction>>(validRecords);
             await _repository.AddRangeAsync(transactions);
             await _unitOfWork.SaveChangesAsync();
-
-            _logger.LogInformation("Successfully imported {Count} transactions.", validRecords.Count);
         }
-        _logger.LogInformation("Transaction import completed. Valid: {ValidCount}, Invalid: {InvalidCount}",
-            validRecords.Count, invalidRecords.Count);
     }
 }
 

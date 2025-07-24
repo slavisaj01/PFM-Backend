@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
-using PFM.Application.DTOs;
 using PFM.Application.Common.Exceptions;
 using PFM.Application.Common.Helpers;
+using PFM.Application.DTOs;
+using PFM.Application.Common.Utilities;
+using static PFM.Application.Common.Utilities.StringExtensions;
 
 namespace PFM.Application.Common.Behaviors;
 
@@ -15,7 +17,6 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
     {
         _validators = validators;
     }
-
     public async Task<TResponse> Handle(
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
@@ -39,7 +40,7 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
                 {
                     Errors = failures.Select(error => new ValidationErrorDto
                     {
-                        Tag = error.CustomState?.ToString() ?? error.PropertyName,
+                        Tag = error.CustomState?.ToString() ?? ToKebabCase(error.PropertyName),
                         Error = ValidationErrorMapper.Map(error),
                         Message = error.ErrorMessage
                     }).ToList()

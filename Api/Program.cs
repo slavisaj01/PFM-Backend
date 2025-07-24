@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Mvc;
 using PFM.Api.Middleware;
+using PFM.Application.Common.Utilities;
+using PFM.Application.DTOs;
 using PFM.Infrastructure.DependecyInjection;
 using Serilog;
 using System.Text.Json;
@@ -18,6 +21,24 @@ public class Program
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); // Enum kao string
                 options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.KebabCaseLower; // camelCase -> kebab-case
             });
+
+        builder.Services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.InvalidModelStateResponseFactory = context =>
+            {
+                var errors = context.ModelState
+                    .Where(x => x.Value?.Errors?.Count > 0)
+                    .SelectMany(kvp => kvp.Value!.Errors.Select(err => new ValidationErrorDto
+                    {
+                        Tag = StringExtensions.ToKebabCase(kvp.Key),
+                        Error = "invalid-format",
+                        Message = err.ErrorMessage
+                    }))
+                    .ToList();
+
+                return new BadRequestObjectResult(new ValidationProblemDto { Errors = errors });
+            };
+        });
 
         builder.Services.AddInfrastructureServices(builder.Configuration);
         builder.Services.AddApplicationServices();

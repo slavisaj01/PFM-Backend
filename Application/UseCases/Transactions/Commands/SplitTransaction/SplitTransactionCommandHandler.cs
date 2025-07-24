@@ -5,6 +5,7 @@ using PFM.Application.Common.Exceptions;
 using PFM.Application.Common.Interfaces;
 using PFM.Domain.Entities;
 using PFM.Domain.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace PFM.Application.UseCases.Transactions.Commands.SplitTransaction;
 
@@ -38,10 +39,10 @@ public class SplitTransactionCommandHandler : IRequestHandler<SplitTransactionCo
 
         var transaction = await _transactionRepository.GetByIdAsync(request.Id);
         if (transaction is null)
-            throw new BusinessException(
-                problem: "transaction-not-found",
-                 message: $"Transaction with ID '{request.Id}' not found."
-             );
+            throw BusinessProblemMessages.Create(
+                BusinessProblemCodes.ProvidedTransactionDoesNotExist,
+                $"Transaction with ID '{request.Id}' not found."
+                );
 
         var splitCatcodes = request.Splits.Select(s => s.Catcode).Distinct().ToList();
         var existingCatcodes = await _categoryRepository.GetExistingCatcodesAsync(splitCatcodes);
@@ -59,7 +60,7 @@ public class SplitTransactionCommandHandler : IRequestHandler<SplitTransactionCo
         {
             throw BusinessProblemMessages.Create(
                 BusinessProblemCodes.SplitAmountOverTransactionAmount,
-                $"Split total: {totalSplitAmount}, Transaction amount: {transaction.Amount}"
+                "Total split amount does not match the transaction amount."
             );
         }
 

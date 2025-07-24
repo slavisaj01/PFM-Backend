@@ -42,6 +42,7 @@ public static class DependencyInjection
         services.AddValidatorsFromAssemblyContaining<GetTransactionsQueryValidator>();
         services.AddValidatorsFromAssemblyContaining<GetSpendingAnalyticsQueryValidator>();
         services.AddValidatorsFromAssemblyContaining<SplitTransactionCommandValidator>();
+        services.AddValidatorsFromAssemblyContaining<CategorizeTransactionCommandValidator>();
 
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 

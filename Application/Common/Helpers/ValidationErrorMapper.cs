@@ -8,6 +8,12 @@ public class ValidationErrorMapper
     {
         var message = failure.ErrorMessage.ToLowerInvariant();
 
+        if (failure.ErrorCode == "must-be-greater-than-0")
+            return "out-of-range";
+
+        if (message.Contains("between 1 and 100"))
+            return "out-of-range";
+
         if (message.Contains("direction must be 'd' or 'c'"))
             return "unknown-enum";
 
@@ -29,7 +35,7 @@ public class ValidationErrorMapper
             return "min-length";
 
         if (message.Contains("startdate must be less than or equal to enddate"))
-            return "invalid-range";
+            return "out-of-range";
 
         return failure.ErrorCode switch
         {

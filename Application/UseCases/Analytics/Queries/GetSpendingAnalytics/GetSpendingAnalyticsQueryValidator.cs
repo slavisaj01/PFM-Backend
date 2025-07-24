@@ -34,8 +34,8 @@ public class GetSpendingAnalyticsQueryValidator : AbstractValidator<GetSpendingA
                 return true; // preskoči ako nije validan datum (biće uhvaćen u prethodnim pravilima)
             })
             .WithMessage("StartDate must be less than or equal to EndDate.")
-            .WithErrorCode("invalid-range")
-            .WithState(_ => "StartDate");
+            .WithErrorCode("out-of-range")
+            .WithState(_ => "start-date");
 
 
     }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using PFM.Application.Common.Exceptions;
 using PFM.Application.DTOs;
 using PFM.Application.UseCases.Transactions.Commands.CategorizeTransaction;
 using PFM.Application.UseCases.Transactions.Commands.ImportTransactions;
@@ -22,9 +23,42 @@ public class TransactionsController : ControllerBase
     }
 
     [HttpPost("import")]
-    [Consumes("application/csv")]
+   // [Consumes("application/csv")]
     public async Task<IActionResult> ImportTransactions()
-    {
+    {// proveri sta je bodi, pa ako je los vrati neku razumnu gresku, vrati 400 ako je lose,moze i nesto drugo ako ima bolje
+        
+        if (!Request.ContentType?.Equals("application/csv", StringComparison.OrdinalIgnoreCase) ?? true)
+        {
+            throw new ValidationProblemException(new ValidationProblemDto
+            {
+                Errors = new List<ValidationErrorDto>
+            {
+                new ValidationErrorDto
+                {
+                    Tag = "content-type",
+                    Error = "invalid-format",
+                    Message = "Content-Type must be 'application/csv'."
+                }
+            }
+            });
+        }
+
+        if (!Request.ContentLength.HasValue || Request.ContentLength.Value == 0)
+        {
+            throw new ValidationProblemException(new ValidationProblemDto
+            {
+                Errors = new List<ValidationErrorDto>
+            {
+                new ValidationErrorDto
+                {
+                    Tag = "body",
+                    Error = "required",
+                    Message = "CSV file is required and cannot be empty."
+                }
+            }
+            });
+        }
+
         var command = new ImportTransactionsCommand { CsvStream = Request.Body };
 
         await _mediator.Send(command);
@@ -78,12 +112,5 @@ public class TransactionsController : ControllerBase
         await _mediator.Send(command);
         return Ok();
     }
-
-    [HttpGet("test-exception")]
-    public IActionResult ThrowTestException()
-    {
-        throw new Exception("Namerni test izuzetak");
-    }
-
 }
 

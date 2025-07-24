@@ -24,6 +24,7 @@ public class GetTransactionsQueryHandler : IRequestHandler<GetTransactionsQuery,
     public async Task<GetTransactionsResponse> Handle(GetTransactionsQuery request,
         CancellationToken cancellationToken)
     {
+
         var parameters = new TransactionQueryParams
         {
             PageNumber = request.PageNumber,

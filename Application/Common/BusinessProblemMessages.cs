@@ -12,6 +12,9 @@ public static class BusinessProblemMessages
         [BusinessProblemCodes.ProvidedCategoryDoesNotExist] = (47453, "Provided category does not exist"),
         [BusinessProblemCodes.SplitAmountOverTransactionAmount] = (57452, "Split amount is larger than transaction amount"),
         [BusinessProblemCodes.InvalidSplitCount] = (57454, "Invalid number of splits"),
+        [BusinessProblemCodes.ProvidedTransactionDoesNotExist] = (47455, "Provided transaction does not exist"),
+        [BusinessProblemCodes.CsvParsingError] = (47456, "CSV file could not be parsed. The format or structure is invalid."),
+        [BusinessProblemCodes.TransactionAlreadyExists] = (57456, "Transaction already exists")
     };
 
     public static BusinessException Create(string problemCode, string? details = null)

@@ -1,13 +1,16 @@
-﻿using CsvHelper;
-using PFM.Application.Common.Interfaces;
+﻿using AutoMapper;
+using CsvHelper;
 using MediatR;
-using PFM.Application.Common.Helpers;
-using PFM.Application.DTOs;
+using Microsoft.Extensions.Logging;
+using PFM.Application.Common;
+using PFM.Application.Common.Constants;
 using PFM.Application.Common.Exceptions;
+using PFM.Application.Common.Helpers;
+using PFM.Application.Common.Interfaces;
+using PFM.Application.DTOs;
 using PFM.Domain.Entities;
 using PFM.Domain.Interfaces;
-using AutoMapper;
-using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace PFM.Application.UseCases.Categories.Commands.ImportCategories;
 
@@ -19,7 +22,7 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
     private readonly IMapper _mapper;
     private readonly ILogger<ImportCategoriesCommandHandler> _logger;
 
-    public ImportCategoriesCommandHandler(ICategoryRepository repository, IUnitOfWork unitOfWork, 
+    public ImportCategoriesCommandHandler(ICategoryRepository repository, IUnitOfWork unitOfWork,
         ICsvParser csvParser, IMapper mapper,
         ILogger<ImportCategoriesCommandHandler> logger)
     {
@@ -32,10 +35,20 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
 
     public async Task Handle(ImportCategoriesCommand request, CancellationToken cancellationToken)
     {
+        List<CategoryCsvDto> csvRecords;
 
-        var csvRecords = await _csvParser.ParseAsync<CategoryCsvDto>(request.CsvStream, cancellationToken);
+        try
+        {
+            csvRecords = await _csvParser.ParseAsync<CategoryCsvDto>(request.CsvStream, cancellationToken);
+        }
+        catch (CsvHelperException)
+        {
+            throw BusinessProblemMessages.Create(
+                BusinessProblemCodes.CsvParsingError,
+                "Ensure the CSV file has the correct delimiter, headers, and consistent structure."
+            );
+        }
 
-        
         var validator = new ImportCategoryCsvDtoValidator();
 
         var validRecords = new List<CategoryCsvDto>();
@@ -61,15 +74,34 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
             }
         }
 
-        foreach (var (record, errors) in invalidRecords)
+        if (invalidRecords.Any())
         {
-            _logger.LogWarning("Invalid category record (Code: {Code}):", string
-                    .IsNullOrWhiteSpace(record.Code) ? "<empty>" : record.Code); ;
+            Directory.CreateDirectory("logs");
 
-            foreach (var error in errors)
+            var logBuilder = new StringBuilder();
+
+            var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+
+            logBuilder.AppendLine($"=== Invalid categories at {timestamp} ===");
+            logBuilder.AppendLine();
+
+            foreach (var (record, errors) in invalidRecords)
             {
-                _logger.LogWarning(" - {Tag}: {Message}", error.Tag, error.Message);
+                logBuilder.AppendLine($"(Code: {(!string.IsNullOrWhiteSpace(record.Code) ? record.Code : "<empty>")})");
+
+                foreach (var error in errors)
+                {
+                    logBuilder.AppendLine($" - {error.Tag}: {error.Message}");
+                }
+
+                logBuilder.AppendLine();
             }
+
+            logBuilder.AppendLine($"Imported: {validRecords.Count} / Skipped: {invalidRecords.Count}");
+            logBuilder.AppendLine("--------------------");
+            logBuilder.AppendLine();
+
+            await File.AppendAllTextAsync("logs/invalid-categories.txt", logBuilder.ToString());
         }
 
         if (validRecords.Any())
@@ -105,12 +137,7 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
 
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation("Successfully imported {Count} categories.", validRecords.Count);
         }
-
-        _logger.LogInformation("Category import completed. Valid: {ValidCount}, Invalid: {InvalidCount}",
-            validRecords.Count, invalidRecords.Count);
-
     }
 }
 

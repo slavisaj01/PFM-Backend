@@ -13,28 +13,28 @@ public class GetTransactionsQueryValidator : AbstractValidator<GetTransactionsQu
     public GetTransactionsQueryValidator()
     {
         RuleFor(x => x.PageNumber)
-            .GreaterThan(0).WithMessage("Page must be greater than 0.");
+            .GreaterThan(0).WithMessage("page-number must be greater than 0.");
 
         RuleFor(x => x.PageSize)
-            .InclusiveBetween(1, 100).WithMessage("PageSize must be between 1 and 100.");
+            .InclusiveBetween(1, 100).WithMessage("page-size must be between 1 and 100.");
 
         RuleFor(x => x.SortOrder)
             .Must(x => x == null || x.ToLower() is "asc" or "desc")
-            .WithMessage("SortOrder must be 'asc' or 'desc'.");
+            .WithMessage("sort-order must be 'asc' or 'desc'.");
 
         RuleFor(x => x.SortBy)
             .Must(x => x == null || new[] { "amount", "date", "beneficiary-name" }.Contains(x.ToLower()))
-            .WithMessage("SortBy must be 'amount', 'date', or 'beneficiary-name'.");
+            .WithMessage("sort-by must be 'amount', 'date', or 'beneficiary-name'.");
 
         RuleFor(x => x.StartDate)
             .Must(BeAValidDateTime)
             .When(x => !string.IsNullOrWhiteSpace(x.StartDate))
-            .WithMessage("StartDate must be a valid ISO 8601 date-time.");
+            .WithMessage("start-date must be a valid ISO 8601 date-time.");
 
         RuleFor(x => x.EndDate)
             .Must(BeAValidDateTime)
             .When(x => !string.IsNullOrWhiteSpace(x.EndDate))
-            .WithMessage("EndDate must be a valid ISO 8601 date-time.");
+            .WithMessage("end-date must be a valid ISO 8601 date-time.");
 
         RuleFor(x => x)
             .Must(x =>
@@ -48,27 +48,23 @@ public class GetTransactionsQueryValidator : AbstractValidator<GetTransactionsQu
 
                 return true; // preskoči ako nije validan datum (biće uhvaćen u prethodnim pravilima)
             })
-            .WithMessage("StartDate must be less than or equal to EndDate.")
+            .WithMessage("start-date must be less than or equal to EndDate.")
             .WithErrorCode("invalid-range")
-            .WithState(_ => "StartDate");
+            .WithState(_ => "start-date");
 
 
-        RuleForEach(x => x.TransactionKinds)
-            .Must(kind => ValidTransactionKinds.Contains(kind.ToLower()))
-            .WithMessage("Each TransactionKind must be a valid transaction kind value.");
-
-
+        RuleFor(x => x.TransactionKinds)
+            .Cascade(CascadeMode.Stop)
+            .NotNull()
+            .Must(kinds => kinds.All(k => ValidTransactionKinds.Contains(k.ToLower())))
+            .WithMessage("transaction-kind must be one of the allowed values.")
+            .WithState(_ => "transaction-kind");
 
     }
 
     private bool BeAValidDateTime(string value)
     {
         return DateTime.TryParse(value, out _);
-    }
-    private bool IsValidTransactionKind(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value)) return true;
-        return ValidTransactionKinds.Contains(value.ToLower());
     }
 }
 
