@@ -20,17 +20,14 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICsvParser _csvParser;
     private readonly IMapper _mapper;
-    private readonly ILogger<ImportTransactionsCommandHandler> _logger;
 
     public ImportTransactionsCommandHandler(ITransactionRepository repository, IUnitOfWork unitOfWork,
-        ICsvParser csvParser, IMapper mapper,
-        ILogger<ImportTransactionsCommandHandler> logger)
+        ICsvParser csvParser, IMapper mapper)
     {
         _repository = repository;
         _unitOfWork = unitOfWork;
         _csvParser = csvParser;
         _mapper = mapper;
-        _logger = logger;
     }
 
     public async Task Handle(ImportTransactionsCommand request, CancellationToken cancellationToken)
@@ -79,7 +76,7 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
 
             var logBuilder = new StringBuilder();
 
-            var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+            var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
             logBuilder.AppendLine($"=== Invalid transactions at {timestamp} ===");
             logBuilder.AppendLine();

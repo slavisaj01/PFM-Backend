@@ -19,17 +19,14 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICsvParser _csvParser;
     private readonly IMapper _mapper;
-    private readonly ILogger<ImportCategoriesCommandHandler> _logger;
 
     public ImportCategoriesCommandHandler(ICategoryRepository repository, IUnitOfWork unitOfWork,
-        ICsvParser csvParser, IMapper mapper,
-        ILogger<ImportCategoriesCommandHandler> logger)
+        ICsvParser csvParser, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _repository = repository;
         _csvParser = csvParser;
         _mapper = mapper;
-        _logger = logger;
     }
 
     public async Task Handle(ImportCategoriesCommand request, CancellationToken cancellationToken)
@@ -79,7 +76,7 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
 
             var logBuilder = new StringBuilder();
 
-            var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+            var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
             logBuilder.AppendLine($"=== Invalid categories at {timestamp} ===");
             logBuilder.AppendLine();

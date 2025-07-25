@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PFM.Application.Common.Exceptions;
 using PFM.Application.DTOs;
@@ -8,8 +7,6 @@ using PFM.Application.UseCases.Transactions.Commands.CategorizeTransaction;
 using PFM.Application.UseCases.Transactions.Commands.ImportTransactions;
 using PFM.Application.UseCases.Transactions.Commands.SplitTransaction;
 using PFM.Application.UseCases.Transactions.Queries.GetTransactions;
-using PFM.Domain.Common.Pagination;
-using PFM.Domain.Entities;
 
 namespace PFM.Api.Controllers;
 
