@@ -1,6 +1,4 @@
-﻿
-using MediatR;
-using PFM.Domain.Enums;
+﻿using MediatR;
 
 namespace PFM.Application.UseCases.Analytics.Queries.GetSpendingAnalytics;
 

@@ -41,7 +41,7 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
             csvRecords = await _csvParser.ParseAsync<TransactionCsvDto>
                (request.CsvStream, cancellationToken);
         }
-        catch (CsvHelperException ex)
+        catch (CsvHelperException)
         {
             throw BusinessProblemMessages.Create(BusinessProblemCodes.CsvParsingError,
                 "Ensure the CSV file has the correct delimiter, headers, and consistent structure.");
@@ -105,7 +105,7 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
 
         foreach (var record in validRecords)
         {
-            var existing = await _repository.GetByIdAsync(record.Id);
+            var existing = await _repository.GetByIdAsync(record.Id!);
             if (existing is not null)
             {
                 throw BusinessProblemMessages.Create(BusinessProblemCodes.TransactionAlreadyExists,

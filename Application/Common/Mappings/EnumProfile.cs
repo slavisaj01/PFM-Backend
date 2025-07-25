@@ -20,7 +20,7 @@ public class EnumProfile : Profile
                     .Where(x => !string.IsNullOrWhiteSpace(x))
                     .Select(x => ConvertToTransactionKind(x))
                     .Where(x => x.HasValue)
-                    .Select(x => x.Value)
+                    .Select(x => x.GetValueOrDefault())
                     .ToList()
             );
 

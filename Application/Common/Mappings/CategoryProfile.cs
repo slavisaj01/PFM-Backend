@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using PFM.Application.DTOs;
 using PFM.Domain.Entities;
 

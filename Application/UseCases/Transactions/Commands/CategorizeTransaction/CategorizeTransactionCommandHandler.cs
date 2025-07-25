@@ -20,13 +20,13 @@ public class CategorizeTransactionCommandHandler : IRequestHandler<CategorizeTra
 
     public async Task<Unit> Handle(CategorizeTransactionCommand request, CancellationToken cancellationToken)
     {
-        var transaction = await _repository.GetByIdAsync(request.Id, cancellationToken);
+        var transaction = await _repository.GetByIdAsync(request.Id!, cancellationToken);
         if (transaction is null)
             throw BusinessProblemMessages.Create(
                 BusinessProblemCodes.ProvidedTransactionDoesNotExist,
                 $"Transaction with ID '{request.Id}' does not exist.");
 
-        var category = await _repository.GetByCodeAsync(request.Catcode, cancellationToken);
+        var category = await _repository.GetByCodeAsync(request.Catcode!, cancellationToken);
         if (category is null)
             throw BusinessProblemMessages.Create(
                 BusinessProblemCodes.ProvidedCategoryDoesNotExist,

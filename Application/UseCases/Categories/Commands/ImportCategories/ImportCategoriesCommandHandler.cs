@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using PFM.Application.Common;
 using PFM.Application.Common.Constants;
-using PFM.Application.Common.Exceptions;
 using PFM.Application.Common.Helpers;
 using PFM.Application.Common.Interfaces;
 using PFM.Application.DTOs;
@@ -106,7 +105,11 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
 
         if (validRecords.Any())
         {
-            var codes = validRecords.Select(r => r.Code).Distinct().ToList();
+            var codes = validRecords
+                .Where(r => !string.IsNullOrWhiteSpace(r.Code))
+                .Select(r => r.Code!)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
             var existingCategories = await _repository.GetByCodesAsync(codes);
 
             var existingDict = existingCategories.ToDictionary(c => c.Code, StringComparer.OrdinalIgnoreCase);
@@ -116,9 +119,11 @@ public class ImportCategoriesCommandHandler : IRequestHandler<ImportCategoriesCo
 
             foreach (var record in validRecords)
             {
-                if (existingDict.TryGetValue(record.Code, out var existing))
+                if (!string.IsNullOrWhiteSpace(record.Code) &&
+                        existingDict.TryGetValue(record.Code, out var existing))
                 {
-                    existing.Name = record.Name;
+                    if (!string.IsNullOrWhiteSpace(record.Name))
+                        existing.Name = record.Name;
                     existing.ParentCode = string.IsNullOrWhiteSpace(record.ParentCode) ? null : record.ParentCode;
                     toUpdate.Add(existing);
                 }

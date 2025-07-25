@@ -56,13 +56,13 @@ public class GetTransactionsQueryValidator : AbstractValidator<GetTransactionsQu
         RuleFor(x => x.TransactionKinds)
             .Cascade(CascadeMode.Stop)
             .NotNull()
-            .Must(kinds => kinds.All(k => ValidTransactionKinds.Contains(k.ToLower())))
+            .Must(kinds => kinds!.All(k => ValidTransactionKinds.Contains(k.ToLower())))
             .WithMessage("transaction-kind must be one of the allowed values.")
             .WithState(_ => "transaction-kind");
 
     }
 
-    private bool BeAValidDateTime(string value)
+    private bool BeAValidDateTime(string? value)
     {
         return DateTime.TryParse(value, out _);
     }

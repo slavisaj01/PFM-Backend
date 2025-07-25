@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using PFM.Application.Common;
 using PFM.Application.Common.Constants;
-using PFM.Application.Common.Exceptions;
 using PFM.Application.Common.Interfaces;
 using PFM.Application.Common.Models;
 using PFM.Domain.Entities;

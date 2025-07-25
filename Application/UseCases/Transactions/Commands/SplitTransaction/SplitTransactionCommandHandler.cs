@@ -44,7 +44,12 @@ public class SplitTransactionCommandHandler : IRequestHandler<SplitTransactionCo
                 $"Transaction with ID '{request.Id}' not found."
                 );
 
-        var splitCatcodes = request.Splits.Select(s => s.Catcode).Distinct().ToList();
+        var splitCatcodes = request.Splits
+            .Select(s => s.Catcode)
+            .Where(c => !string.IsNullOrWhiteSpace(c)) 
+            .Cast<string>() // eksplicitno konvertuje u non-nullable string
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
         var existingCatcodes = await _categoryRepository.GetExistingCatcodesAsync(splitCatcodes);
 
         var missingCatcodes = splitCatcodes.Except(existingCatcodes, StringComparer.OrdinalIgnoreCase).ToList();
@@ -69,7 +74,7 @@ public class SplitTransactionCommandHandler : IRequestHandler<SplitTransactionCo
         var newSplits = request.Splits.Select(s => new TransactionSplit
         {
             TransactionId = request.Id,
-            CategoryCode = s.Catcode,
+            CategoryCode = s.Catcode!,
             Amount = (decimal)s.Amount
         }).ToList();
 

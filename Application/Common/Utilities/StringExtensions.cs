@@ -1,6 +1,5 @@
 ﻿using System.Text.RegularExpressions;
 
-
 namespace PFM.Application.Common.Utilities;
 
 public static class StringExtensions

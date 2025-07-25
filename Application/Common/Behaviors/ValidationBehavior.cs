@@ -3,7 +3,6 @@ using MediatR;
 using PFM.Application.Common.Exceptions;
 using PFM.Application.Common.Helpers;
 using PFM.Application.DTOs;
-using PFM.Application.Common.Utilities;
 using static PFM.Application.Common.Utilities.StringExtensions;
 
 namespace PFM.Application.Common.Behaviors;

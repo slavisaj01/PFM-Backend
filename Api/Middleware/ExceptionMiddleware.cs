@@ -35,7 +35,7 @@ public class ExceptionMiddleware
                 {
                     new ValidationErrorDto
                     {
-                        Tag = null,
+                        Tag = "database",
                         Error = "service-unavailable",
                         Message = "A database error occurred while processing your request. Please contact support."
                     }
@@ -82,7 +82,7 @@ public class ExceptionMiddleware
                 {
                     new ValidationErrorDto
                     {
-                        Tag = null,
+                        Tag = "general",
                         Error = "invalid-format",
                         Message = "An unexpected error occurred. Please try again later."
                     }

@@ -1,5 +1,4 @@
-﻿
-using PFM.Domain.Entities;
+﻿using PFM.Domain.Entities;
 
 namespace PFM.Domain.Interfaces;
 

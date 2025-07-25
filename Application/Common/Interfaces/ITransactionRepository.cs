@@ -1,5 +1,4 @@
-﻿using PFM.Application.UseCases.Transactions.Queries.GetTransactions;
-using PFM.Domain.Common;
+﻿using PFM.Domain.Common;
 using PFM.Domain.Common.Pagination;
 using PFM.Domain.Entities;
 using PFM.Domain.Enums;

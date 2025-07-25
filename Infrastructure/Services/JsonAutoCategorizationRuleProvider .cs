@@ -11,7 +11,8 @@ public class JsonAutoCategorizationRuleProvider : IAutoCategorizationRuleProvide
 
     public JsonAutoCategorizationRuleProvider()
     {
-        _filePath = Path.Combine(AppContext.BaseDirectory, "Data", "auto-categorization-rules.json");
+        _filePath = Path.Combine(AppContext.BaseDirectory, "Data",
+            "auto-categorization-rules.json");
     }
 
     public async Task<List<AutoCategorizationRule>> GetRulesAsync()

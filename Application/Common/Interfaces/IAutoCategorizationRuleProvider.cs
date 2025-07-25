@@ -1,5 +1,4 @@
-﻿
-using PFM.Application.Common.Models;
+﻿using PFM.Application.Common.Models;
 
 namespace PFM.Application.Common.Interfaces;
 

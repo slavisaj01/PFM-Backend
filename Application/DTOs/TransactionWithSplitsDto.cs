@@ -1,6 +1,4 @@
-﻿
-using CsvHelper.Configuration.Attributes;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace PFM.Application.DTOs;
 
