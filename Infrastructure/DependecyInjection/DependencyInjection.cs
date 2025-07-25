@@ -9,7 +9,6 @@ using PFM.Application.Common.Mappings;
 using PFM.Application.UseCases.Analytics.Queries.GetSpendingAnalytics;
 using PFM.Application.UseCases.Transactions.Commands.SplitTransaction;
 using PFM.Application.UseCases.Transactions.Queries.GetTransactions;
-using PFM.Domain.Common.Services;
 using PFM.Domain.Interfaces;
 using PFM.Infrastructure.Parsers;
 using PFM.Infrastructure.Persistence.Data;
@@ -51,8 +50,6 @@ public static class DependencyInjection
 
 
         services.AddAutoMapper(cfg => { }, typeof(CategoryProfile).Assembly);
-
-        services.AddScoped<ICategoryDomainService, CategoryDomainService>();
 
         return services;
     }
