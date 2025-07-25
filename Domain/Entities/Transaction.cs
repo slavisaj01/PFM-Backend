@@ -4,7 +4,7 @@ namespace PFM.Domain.Entities;
 
 public class Transaction
 {
-    public string Id { get; set; } = default!;
+    public required string Id { get; set; }
 
     public string? BeneficiaryName { get; set; }
 
@@ -16,7 +16,7 @@ public class Transaction
 
     public string? Description { get; set; }
 
-    public string Currency { get; set; } = default!;
+    public required string Currency { get; set; } 
 
     public MccCode? Mcc { get; set; }
 

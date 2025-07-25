@@ -8,8 +8,8 @@ namespace PFM.Domain.Entities;
 
 public class Category
 {
-    public string Code { get; set; } = default!; 
-    public string Name { get; set; } = default!;
+    public required string Code { get; set; }  
+    public required string Name { get; set; }
     public string? ParentCode { get; set; }
     public Category? Parent { get; set; }
     public ICollection<Category> Children { get; set; } = new List<Category>();
