@@ -25,6 +25,13 @@ public class CategoryRepository : ICategoryRepository
         await _dbContext.Categories.AddRangeAsync(categories);
     }
 
+    public async Task<List<Category>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        return await _dbContext.Categories
+            .AsNoTracking()// sta ovo znaci nauci obavezno!!!!!
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<Category?> GetByCodeAsync(string code)
     {
         return await _dbContext.Categories

@@ -93,7 +93,7 @@ public class TransactionsController : ControllerBase
     public async Task<IActionResult> TransactionCategorize(string id,
         [FromBody] TransactionCategorizeCommandDto dto)
     {
-        var command = new CategorizeTransactionCommand { Id = id, Catcode = dto.Catcode };
+        var command = new CategorizeTransactionCommand { Id = id, Catcode = dto.CatCode };
         await _mediator.Send(command);
         return Ok();
     }

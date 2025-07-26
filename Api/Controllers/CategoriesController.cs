@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PFM.Application.Common.Exceptions;
 using PFM.Application.DTOs;
 using PFM.Application.UseCases.Categories.Commands.ImportCategories;
+using PFM.Application.UseCases.Categories.Queries.Get_Categories;
 
 namespace PFM.Api.Controllers;
 
@@ -60,4 +61,14 @@ public class CategoriesController : ControllerBase
         return Ok();
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetCategories()
+    {
+        var result = await _mediator.Send(new GetCategoriesQuery());
+
+        return Ok(new CategoryListDto
+        {
+            Items = result
+        });
+    }
 }

@@ -1,7 +1,9 @@
-﻿
+﻿using System.Text.Json.Serialization;
+
 namespace PFM.Application.DTOs;
 
 public class TransactionCategorizeCommandDto
 {
-    public string? Catcode { get; set; }
+    [JsonPropertyName("cat-code")]
+    public string? CatCode { get; set; }
 }

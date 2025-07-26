@@ -12,5 +12,7 @@ public class CategoryProfile : Profile
             .ForMember(dest => dest.ParentCode,
                 opt => opt.MapFrom(src =>
                     string.IsNullOrWhiteSpace(src.ParentCode) ? null : src.ParentCode));
+        CreateMap<Category, CategoryCsvDto>()
+            .ForMember(dest => dest.ParentCode, opt => opt.MapFrom(src => src.ParentCode ?? ""));
     }
 }
