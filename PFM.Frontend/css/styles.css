@@ -1,0 +1,157 @@
+body {
+    background: #181a20;
+    color: #fff;
+}
+.card {
+    background: #23262f;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.table-dark {
+    --bs-table-bg: #23262f;
+    --bs-table-striped-bg: #23262f;
+    --bs-table-hover-bg: #23262f;
+    color: #fff;
+}
+.table th, .table td {
+    vertical-align: middle;
+}
+.table td:first-child {
+    width: 250px;
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.table th:last-child,
+.table td:last-child {
+    text-align: center;
+    width: 160px;
+}
+.badge-category {
+    font-size: 0.9em;
+    padding: 0.4em 0.8em;
+    border-radius: 12px;
+}
+.badge-groceries {
+    background: #00c896;
+    color: #fff;
+}
+.badge-bankfee {
+    background: #6c757d;
+    color: #fff;
+}
+.btn-split {
+    width: 140px;
+    height: 32px;
+    background: #23262f;
+    color: #fff;
+    border: 2px solid #00c896;
+    border-radius: 8px;
+    font-size: 0.95em;
+    display: inline-block;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+    box-shadow: 0 0 0 1px #00c89633;
+    padding: 0 0.5em;
+}
+.btn-split.assigned {
+    background: #00c896;
+    color: #fff;
+    border: 2px solid #00c896;
+}
+.btn-split.add-category {
+    background: #23262f;
+    color: #b0b8c1;
+    border: 2px solid #4e5a6e;
+    box-shadow: 0 0 0 1px #4e5a6e33;
+}
+.btn-split.add-category:hover {
+    background: #2a2d36;
+    color: #fff;
+    border-color: #00c896;
+}
+.direction-up {
+    color: #00c896;
+    font-size: 1.2em;
+}
+.direction-down {
+    color: #ff5c5c;
+    font-size: 1.2em;
+}
+.pagination {
+    justify-content: center;
+}
+.pagination .page-link {
+    min-width: 44px;
+    min-height: 38px;
+    padding: 0.5em 1em;
+    border-radius: 8px !important;
+    text-align: center;
+    font-size: 1em;
+    margin: 0 2px;
+    background: #23262f;
+    color: #00c896;
+    border: 1px solid #23262f;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.pagination .page-link:hover {
+    background: #00c896;
+    color: #fff;
+    border-color: #00c896;
+}
+.pagination .active .page-link {
+    background: #00c896;
+    color: #fff;
+    border-color: #00c896;
+}
+.pagination .disabled .page-link {
+    color: #888;
+    background: #23262f;
+    border-color: #23262f;
+    cursor: not-allowed;
+}
+.filters-btn {
+    background: #23262f;
+    color: #00c896;
+    border: 1px solid #00c896;
+    border-radius: 8px;
+}
+.filters-btn:hover {
+    background: #00c896;
+    color: #fff;
+}
+.modal-backdrop.show {
+    opacity: 0.8;
+}
+#filters-panel {
+    background: #23262f;
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+#filters-panel label {
+    font-weight: 500;
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2),
+.table th:nth-child(3),
+.table td:nth-child(3),
+.table th:nth-child(4),
+.table td:nth-child(4),
+.table th:nth-child(5),
+.table td:nth-child(5) {
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+

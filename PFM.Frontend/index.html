@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Transaction List - Dark Theme</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+  <div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bold">Transaction List</h2>
+      <button class="filters-btn px-3 py-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+             class="bi bi-funnel" viewBox="0 0 16 16">
+          <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .4.8L10 7.417V13.5a.5.5 0 0 1-.757.429l-2-1.2A.5.5 0 0 1 7 12.5V7.417L1.6 1.8A.5.5 0 0 1 1.5 1.5z"/>
+        </svg>
+        Filters
+      </button>
+    </div>
+
+    <!-- Filters Panel -->
+    <div id="filters-panel" class="mb-4 d-none">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label for="filter-kind" class="form-label text-white">Transaction Kind</label>
+          <select id="filter-kind" class="form-select">
+            <option value="">All</option>
+            <option value="dep">Deposit</option>
+            <option value="wdw">Withdrawal</option>
+            <option value="pmt">Payment</option>
+            <option value="fee">Fee</option>
+            <option value="inc">Interest credit</option>
+            <option value="rev">Reversal</option>
+            <option value="adj">Adjustment</option>
+            <option value="lnd">Loan disbursement</option>
+            <option value="lnr">Loan repayment</option>
+            <option value="fcx">Foreign currency exchange</option>
+            <option value="aop">Account openning</option>
+            <option value="acl">Account closing</option>
+            <option value="spl">Split payment</option>
+            <option value="sal">Salary</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="filter-start" class="form-label text-white">Start Date</label>
+          <input type="date" id="filter-start" class="form-control"/>
+        </div>
+        <div class="col-md-3">
+          <label for="filter-end" class="form-label text-white">End Date</label>
+          <input type="date" id="filter-end" class="form-control"/>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+          <button id="apply-filters" class="btn btn-success w-100">Apply</button>
+          <button id="reset-filters" class="btn btn-outline-light w-100">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card p-4">
+      <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle mb-0">
+          <thead>
+          <tr>
+            <th>Beneficiary</th>
+            <th>Date</th>
+            <th>Direction</th>
+            <th>Amount</th>
+            <th>Currency</th>
+            <th>Kind</th>
+            <th>Category</th>
+          </tr>
+          </thead>
+          <tbody id="transaction-table-body"></tbody>
+        </table>
+      </div>
+      <nav id="pagination-nav" class="mt-4 d-flex justify-content-center"></nav>
+    </div>
+  </div>
+
+  <!-- Category Modal -->
+  <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header">
+          <h5 class="modal-title" id="categoryModalLabel">Select Category</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="categorySelect" class="form-label">Category</label>
+            <select class="form-select" id="categorySelect"></select>
+          </div>
+          <div class="mb-3">
+            <label for="subcategorySelect" class="form-label">Subcategory</label>
+            <select class="form-select" id="subcategorySelect"></select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="saveCategoryBtn">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

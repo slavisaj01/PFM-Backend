@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PFM.Api.Middleware;
 using PFM.Application.Common.Utilities;
 using PFM.Application.DTOs;
 using PFM.Infrastructure.DependecyInjection;
+using PFM.Infrastructure.Persistence.Data;
 using Serilog;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -92,7 +94,16 @@ public class Program
 
         app.MapControllers();
 
+        UpdateDatabase(app);
+
         app.Run();
+
+        static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices.CreateScope();
+            using var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            context.Database.Migrate();
+        }
     }
 }
 

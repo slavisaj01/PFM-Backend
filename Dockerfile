@@ -16,23 +16,19 @@ RUN dotnet restore
 COPY . .
 RUN dotnet publish Api/PFM.Api.csproj -c Release -o out
 
-# Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
-WORKDIR /app
-
-# Install dotnet dev-certs tool (hack for runtime)
-RUN apt-get update && apt-get install -y wget
-RUN wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-RUN dpkg -i packages-microsoft-prod.deb
-RUN apt-get update && apt-get install -y dotnet-sdk-8.0
-
-# Generate HTTPS certificate
+# Generate HTTPS certificate in build stage
 RUN dotnet dev-certs https --clean
 RUN mkdir -p /https
 RUN dotnet dev-certs https -ep /https/aspnetapp.pfx -p SecurePassword123
 
-# Copy published app
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+
+# Copy published app and certificate from build stage
+
 COPY --from=build /app/out .
+COPY --from=build /https /https
 
 # Expose ports
 EXPOSE 80
