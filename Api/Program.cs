@@ -22,14 +22,24 @@ public class Program
                 options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.KebabCaseLower; // camelCase -> kebab-case
             });
 
+        //builder.Services.AddCors(options =>
+        //{
+        //    options.AddPolicy("AllowAngular", policy =>
+        //    {
+        //        policy.WithOrigins("http://localhost:4200")
+        //              .AllowAnyMethod()
+        //              .AllowAnyHeader()
+        //              .AllowCredentials();
+        //    });
+        //});
+
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowAngular", policy =>
+            options.AddDefaultPolicy(policy =>
             {
-                policy.WithOrigins("http://localhost:4200")
-                      .AllowAnyMethod()
+                policy.AllowAnyOrigin() // For development only! Use specific origins in production.
                       .AllowAnyHeader()
-                      .AllowCredentials();
+                      .AllowAnyMethod();
             });
         });
 
@@ -72,7 +82,8 @@ public class Program
 
         app.UseHttpsRedirection();
 
-        app.UseCors("AllowAngular");
+        //app.UseCors("AllowAngular");
+        app.UseCors();
 
         app.UseMiddleware<ExceptionMiddleware>();
 

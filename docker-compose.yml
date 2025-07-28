@@ -1,0 +1,60 @@
+
+services:
+  # API servis
+  api:
+    build: .
+    ports:
+      - "7138:7138"
+      - "5038:5038"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:7138;http://+:5038
+      # Ovde se povezuje na postgres servis (ne localhost!)
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=pfm;Username=postgres;Password=admin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # PostgreSQL baza
+  postgres:
+    image: postgres:15-alpine
+    container_name: pfm_postgres
+    environment:
+      POSTGRES_DB: pfm
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"  # Mapira na host za pristup spoljni
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d  # Za inicijalne skripte
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # pgAdmin (opciono - GUI za bazu)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pfm_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:  # Perzistentni storage za bazu
+
+networks:
+  app-network:
+    driver: bridge
