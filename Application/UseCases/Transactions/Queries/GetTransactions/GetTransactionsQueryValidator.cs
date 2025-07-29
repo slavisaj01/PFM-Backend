@@ -46,7 +46,7 @@ public class GetTransactionsQueryValidator : AbstractValidator<GetTransactionsQu
                     return start <= end;
                 }
 
-                return true; // preskoči ako nije validan datum (biće uhvaćen u prethodnim pravilima)
+                return true;
             })
             .WithMessage("start-date must be less than or equal to EndDate.")
             .WithErrorCode("invalid-range")

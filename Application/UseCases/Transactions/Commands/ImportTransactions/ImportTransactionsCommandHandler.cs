@@ -44,7 +44,7 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
                 "Ensure the CSV file has the correct delimiter, headers, and consistent structure.");
         }
 
-        var validator = new ImportTransactionCsvDtoValidator();//mozda DI umesto rucno kreiranje
+        var validator = new ImportTransactionCsvDtoValidator();
 
         var validRecords = new List<TransactionCsvDto>();
 
@@ -72,7 +72,7 @@ public class ImportTransactionsCommandHandler : IRequestHandler<ImportTransactio
 
         if (invalidRecords.Count != 0)
         {
-            Directory.CreateDirectory("logs"); // ako ne postoji
+            Directory.CreateDirectory("logs"); 
 
             var logBuilder = new StringBuilder();
 

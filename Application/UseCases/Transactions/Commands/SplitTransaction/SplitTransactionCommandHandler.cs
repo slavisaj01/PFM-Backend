@@ -47,7 +47,7 @@ public class SplitTransactionCommandHandler : IRequestHandler<SplitTransactionCo
         var splitCatcodes = request.Splits
             .Select(s => s.Catcode)
             .Where(c => !string.IsNullOrWhiteSpace(c)) 
-            .Cast<string>() // eksplicitno konvertuje u non-nullable string
+            .Cast<string>()
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
         var existingCatcodes = await _categoryRepository.GetExistingCatcodesAsync(splitCatcodes);

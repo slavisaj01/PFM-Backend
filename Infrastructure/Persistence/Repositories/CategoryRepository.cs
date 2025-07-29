@@ -28,7 +28,7 @@ public class CategoryRepository : ICategoryRepository
     public async Task<List<Category>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _dbContext.Categories
-            .AsNoTracking()// sta ovo znaci nauci obavezno!!!!!
+            .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
 

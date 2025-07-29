@@ -23,7 +23,7 @@ public class TransactionsController : ControllerBase
     [HttpPost("import")]
    // [Consumes("application/csv")]
     public async Task<IActionResult> ImportTransactions()
-    {// proveri sta je bodi, pa ako je los vrati neku razumnu gresku, vrati 400 ako je lose,moze i nesto drugo ako ima bolje
+    {
         
         if (!Request.ContentType?.Equals("application/csv", StringComparison.OrdinalIgnoreCase) ?? true)
         {

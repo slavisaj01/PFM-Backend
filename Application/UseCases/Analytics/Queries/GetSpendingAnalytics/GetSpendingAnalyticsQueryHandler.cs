@@ -26,8 +26,6 @@ public class GetSpendingAnalyticsQueryHandler : IRequestHandler<GetSpendingAnaly
 
     public async Task<GetSpendingAnalyticsResponse> Handle(GetSpendingAnalyticsQuery request, CancellationToken cancellationToken)
     {
-        //ovde ne koristim nesto kao TransactionQueryParams jer mi nije potrebno
-        //nemam ni paginaciju niti sort niti enum neki sve su prosti parametri pa ih mogu poslati ovk
 
         if (!string.IsNullOrWhiteSpace(request.Catcode))
         {
@@ -56,8 +54,7 @@ public class GetSpendingAnalyticsQueryHandler : IRequestHandler<GetSpendingAnaly
                 Amount = Math.Round((double)g.Sum(t => t.Amount), 2),
                 Count = g.Count()
             })
-            .ToList();//bolje rucno mapiranje jer imam group by i select
-                      //koji rucno transaformisu Transaction u dto sto je normalno kod grupisanja i agregacija
+            .ToList();
 
         return new GetSpendingAnalyticsResponse
         {
